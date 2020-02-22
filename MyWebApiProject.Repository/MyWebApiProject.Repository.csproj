@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>E:\工作代码\WebApi框架\MyWebApiProject\bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyWebApiProject.Common\MyWebApiProject.Common.csproj" />
+    <ProjectReference Include="..\MyWebApiProject.IRepository\MyWebApiProject.IRepository.csproj" />
+  </ItemGroup>
+
+</Project>
