@@ -190,13 +190,15 @@ namespace MyWebApiProject
             builder.RegisterAssemblyTypes(assemblyServices)
                 .AsImplementedInterfaces()
                 .InstancePerDependency()
-                //.EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy
-                 .InterceptedBy(cacheType.ToArray());//允许将拦截器服务的列表分配给注册。
+                .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy
+                .InterceptedBy(cacheType.ToArray());//允许将拦截器服务的列表分配给注册。
             // 获取 Repository.dll 程序集服务，并注册
             var assemblysRepository = Assembly.LoadFrom(repositoryDllFile);
             builder.RegisterAssemblyTypes(assemblysRepository)
                 .AsImplementedInterfaces()
-               .InstancePerDependency();
+                .InstancePerDependency();
+            //.InstancePerDependency();
+            // .EnableInterfaceInterceptors();
             #endregion
         }
     }

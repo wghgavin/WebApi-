@@ -61,7 +61,7 @@ namespace MyWebApiProject.Common.LogHelper
                 //注意：一次请求对应一次释放
                 //      若释放次数大于请求次数将会触发异常[写入锁定未经保持即被释放]
                 //      若请求处理完成后未释放将会触发异常[此模式不下允许以递归方式获取写入锁定]
-                LogWriteLock.ExitReadLock();
+                LogWriteLock.ExitWriteLock();
             }
         }
         public static string ReadLog(string Path, Encoding encode)

@@ -20,6 +20,17 @@ namespace MyWebApiProject.Controllers
             this.userService = userService;
         }
         /// <summary>
+        /// 获取博客列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet(Name = "GetBlogs")]
+        //[Route("GetBlogs")]
+        public async Task<List<UserEntity>> GetBlogs()
+        {
+
+            return await userService.getBlogs();
+        }
+        /// <summary>
         /// 获取Token的令牌
         /// </summary>
         /// <param name="name"></param>

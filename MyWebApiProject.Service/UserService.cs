@@ -5,6 +5,8 @@ using MyWebApiProject.IService;
 using MyWebApiProject.Model.DbModel;
 using MyWebApiProject.Service.Base;
 using MyWebApiProject.IRepository;
+using System.Threading.Tasks;
+
 namespace MyWebApiProject.Service
 {
    public class UserService:BaseService<UserEntity>,IUserService
@@ -14,6 +16,13 @@ namespace MyWebApiProject.Service
         {
             this.dal = dal;
             base.baseDal = dal;
+        }
+        public  async Task<List<UserEntity>> getBlogs()
+        {
+            var bloglist = await dal.Query(a => a.Id > 0);
+
+            return bloglist;
+
         }
     }
 }

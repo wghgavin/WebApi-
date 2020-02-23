@@ -18,6 +18,12 @@ namespace MyWebApiProject.AOP
     {
         private readonly IHubContext<ChatHub> _hubContext;
         private readonly IHttpContextAccessor _accessor;
+
+        public MyApiLogAOP(IHubContext<ChatHub> hubContext, IHttpContextAccessor accessor)
+        {
+            _hubContext = hubContext;
+            _accessor = accessor;
+        }
         /// <summary>
         /// 实例化IInterceptor唯一方法 
         /// </summary>
@@ -86,7 +92,7 @@ namespace MyWebApiProject.AOP
             Parallel.For(0, 1, e => {
                 LogLock.OutSql2Log("AOPLog", new string[] { dataIntercept });
             });
-            _hubContext.Clients.All.SendAsync("ReceiveUpdate", LogLock.GetLogData()).Wait();
+            //_hubContext.Clients.All.SendAsync("ReceiveUpdate", LogLock.GetLogData()).Wait();
 
 
         }
