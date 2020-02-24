@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>F:\wgh.工作\WebApi框架\MyWebApiProject\bin\Debug\</OutputPath>
+    <OutputPath>D:\WebApi框架\WebApi-\MyWebApiProject\bin\Debug\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

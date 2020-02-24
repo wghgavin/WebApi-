@@ -28,6 +28,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using MyWebApiProject.AOP;
 using MyWebApiProject.Common.LogHelper;
+using Microsoft.AspNetCore.Http;
+using MyWebApiProject.Middlewares;
+using MyWebApiProject.Common.Hubs;
 
 namespace MyWebApiProject
 {
@@ -46,10 +49,11 @@ namespace MyWebApiProject
         {
             BaseDbConfig.ConnectionString = Configuration.GetSection("AppSettings:MySqlConnectionString").Value;
             services.AddControllers();
+            services.AddSignalR();
             services.AddSingleton(new Appsettings(Env.ContentRootPath));
             services.AddSingleton(new LogLock(Env.ContentRootPath));
-            //services.AddSingleton<IUserService, UserService>();
-            //services.AddSingleton<IOrderInfoService, OrderInfoService>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             #region JWT »œ÷§
             #region ¥˙¬ÎºÚΩ‡∞Ê
             services
@@ -135,11 +139,12 @@ namespace MyWebApiProject
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //app.UseSignalRSendMildd();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -157,7 +162,9 @@ namespace MyWebApiProject
             {
                 endpoints.MapControllerRoute("default",
                           "{controller=Home}/{action=Index}/{id?}");
+                //endpoints.MapHub<ChatHub>("/api/chatHub");
             });
+       
             #region Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
