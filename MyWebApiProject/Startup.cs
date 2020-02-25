@@ -28,6 +28,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using MyWebApiProject.AOP;
 using MyWebApiProject.Common.LogHelper;
+using Microsoft.AspNetCore.Http;
+using MyWebApiProject.Middlewares;
+using MyWebApiProject.Common.Hubs;
 
 namespace MyWebApiProject
 {
@@ -46,10 +49,10 @@ namespace MyWebApiProject
         {
             BaseDbConfig.ConnectionString = Configuration.GetSection("AppSettings:MySqlConnectionString").Value;
             services.AddControllers();
+            services.AddSignalR();
             services.AddSingleton(new Appsettings(Env.ContentRootPath));
             services.AddSingleton(new LogLock(Env.ContentRootPath));
-            //services.AddSingleton<IUserService, UserService>();
-            //services.AddSingleton<IOrderInfoService, OrderInfoService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             #region JWT 认证
             #region 代码简洁版
             services
@@ -135,11 +138,12 @@ namespace MyWebApiProject
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //app.UseSignalRSendMildd();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -149,15 +153,13 @@ namespace MyWebApiProject
             app.UseAuthorization();
 
 
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllers();
-            //});
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute("default",
                           "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<ChatHub>("/chatHub");
             });
+       
             #region Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -180,6 +182,11 @@ namespace MyWebApiProject
 
             // AOP 开关，如果想要打开指定的功能，只需要在 appsettigns.json 对应对应 true 就行。
             var cacheType = new List<Type>();
+            if(Appsettings.app(new string[] { "AppSettings", "MemoryCachingAOP", "Enabled" }).ObjToBool())
+            {
+                builder.RegisterType<MyApiCacheAOP>();
+                cacheType.Add(typeof(MyApiCacheAOP));
+            }
             if(Appsettings.app(new string[] { "AppSettings", "LogAOP", "Enabled" }).ObjToBool())
             {
                 builder.RegisterType<MyApiLogAOP>();
@@ -190,13 +197,15 @@ namespace MyWebApiProject
             builder.RegisterAssemblyTypes(assemblyServices)
                 .AsImplementedInterfaces()
                 .InstancePerDependency()
-                //.EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy
-                 .InterceptedBy(cacheType.ToArray());//允许将拦截器服务的列表分配给注册。
+                .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy
+                .InterceptedBy(cacheType.ToArray());//允许将拦截器服务的列表分配给注册。
             // 获取 Repository.dll 程序集服务，并注册
             var assemblysRepository = Assembly.LoadFrom(repositoryDllFile);
             builder.RegisterAssemblyTypes(assemblysRepository)
                 .AsImplementedInterfaces()
-               .InstancePerDependency();
+                .InstancePerDependency();
+            //.InstancePerDependency();
+            // .EnableInterfaceInterceptors();
             #endregion
         }
     }
