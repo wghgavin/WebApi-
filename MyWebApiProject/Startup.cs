@@ -52,7 +52,6 @@ namespace MyWebApiProject
             services.AddSignalR();
             services.AddSingleton(new Appsettings(Env.ContentRootPath));
             services.AddSingleton(new LogLock(Env.ContentRootPath));
-
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             #region JWT 认证
             #region 代码简洁版
@@ -154,16 +153,6 @@ namespace MyWebApiProject
             app.UseAuthorization();
 
 
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllers();
-            //});
-            //app.UseSignalR(routes =>
-            //{
-            //    //这里要说下，为啥地址要写 /api/xxx 
-            //    //因为我前后端分离了，而且使用的是代理模式，所以如果你不用/api/xxx的这个规则的话，会出现跨域问题，毕竟这个不是我的controller的路由，而且自己定义的路由
-            //    routes.MapHub<ChatHub>("/api/chatHub");
-            //});
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute("default",
@@ -193,6 +182,11 @@ namespace MyWebApiProject
 
             // AOP 开关，如果想要打开指定的功能，只需要在 appsettigns.json 对应对应 true 就行。
             var cacheType = new List<Type>();
+            if(Appsettings.app(new string[] { "AppSettings", "MemoryCachingAOP", "Enabled" }).ObjToBool())
+            {
+                builder.RegisterType<MyApiCacheAOP>();
+                cacheType.Add(typeof(MyApiCacheAOP));
+            }
             if(Appsettings.app(new string[] { "AppSettings", "LogAOP", "Enabled" }).ObjToBool())
             {
                 builder.RegisterType<MyApiLogAOP>();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MyWebApiProject.Common;
 using MyWebApiProject.IService;
 using MyWebApiProject.Model.DbModel;
 
@@ -23,6 +24,7 @@ namespace MyWebApiProject.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GetAllGoodsInfo")]
+        [Caching]
         public async Task<List<GoodsEntity>> GetAllGoodsInfo()
         {
             return await goodsService.Query();

@@ -32,6 +32,7 @@ namespace MyWebApiProject.Controllers
         /// <param name="orderInfoEntity"></param>
         /// <returns></returns>
         [HttpPost(Name = "AddOrderInfo")]
+       
         public async Task<int> AddOrderInfo(OrderInfoEntity orderInfoEntity)
         {
             return await orderInfoService.Add(orderInfoEntity);
