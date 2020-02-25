@@ -24,7 +24,7 @@ namespace MyWebApiProject.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GetAllGoodsInfo")]
-        [Caching]
+        [Caching(AbsoluteExpiration=30)]
         public async Task<List<GoodsEntity>> GetAllGoodsInfo()
         {
             return await goodsService.Query();

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyWebApiProject.Service
 {
-   public class UserService:BaseService<UserEntity>,IUserService
+    public class UserService:BaseService<UserEntity>, IUserService
     {
         IUserRepository dal;
         public UserService(IUserRepository dal)
@@ -17,12 +17,9 @@ namespace MyWebApiProject.Service
             this.dal = dal;
             base.baseDal = dal;
         }
-        public  async Task<List<UserEntity>> getBlogs()
+       public async Task<List<UserEntity>> getBlogs()
         {
-            var bloglist = await dal.Query(a => a.Id > 0);
-
-            return bloglist;
-
+            return await dal.Query();
         }
     }
 }

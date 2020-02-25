@@ -19,7 +19,6 @@ using Autofac;
 using Autofac.Extras.DynamicProxy;
 using MyWebApiProject.Common.DB;
 using MyWebApiProject.IService;
-//using MyWebApiProject.Service;
 using Autofac.Extensions.DependencyInjection;
 using MyWebApiProject.Common.Util;
 using Swashbuckle.AspNetCore.Filters;
@@ -31,6 +30,7 @@ using MyWebApiProject.Common.LogHelper;
 using Microsoft.AspNetCore.Http;
 using MyWebApiProject.Middlewares;
 using MyWebApiProject.Common.Hubs;
+using MyWebApiProject.Extensions;
 
 namespace MyWebApiProject
 {
@@ -53,6 +53,7 @@ namespace MyWebApiProject
             services.AddSingleton(new Appsettings(Env.ContentRootPath));
             services.AddSingleton(new LogLock(Env.ContentRootPath));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddMemoryCacheSetup();
             #region JWT »œ÷§
             #region ¥˙¬ÎºÚΩ‡∞Ê
             services
@@ -138,6 +139,7 @@ namespace MyWebApiProject
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            
             //app.UseSignalRSendMildd();
             if (env.IsDevelopment())
             {
@@ -204,7 +206,6 @@ namespace MyWebApiProject
             builder.RegisterAssemblyTypes(assemblysRepository)
                 .AsImplementedInterfaces()
                 .InstancePerDependency();
-            //.InstancePerDependency();
             // .EnableInterfaceInterceptors();
             #endregion
         }

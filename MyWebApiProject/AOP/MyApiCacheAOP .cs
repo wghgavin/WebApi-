@@ -19,8 +19,9 @@ namespace MyWebApiProject.AOP
         public void Intercept(IInvocation invocation)
         {
             var method = invocation.MethodInvocationTarget ?? invocation.Method;
+            var s = method.GetCustomAttributes(true);
             //对当前方法的特性验证
-            if(method.GetCustomAttributes(true).FirstOrDefault(x=>x.GetType()==typeof(CachingAttribute)) is CachingAttribute cachingAttribute)
+            if (method.GetCustomAttributes(true).FirstOrDefault(x=>x.GetType()==typeof(CachingAttribute)) is CachingAttribute cachingAttribute)
             {
                 //获取自定义缓存键
                 var cacheKey = CustomCacheKey(invocation);
