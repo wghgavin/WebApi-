@@ -54,6 +54,7 @@ namespace MyWebApiProject
             services.AddSingleton(new LogLock(Env.ContentRootPath));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMemoryCacheSetup();
+            services.AddMiniProfilerSetUp();
             #region JWT 认证
             #region 代码简洁版
             services
@@ -115,6 +116,8 @@ namespace MyWebApiProject
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath, true);
+                var xmlPath_model = Path.Combine(AppContext.BaseDirectory, "MyWebApiProject.Model.xml");
+                c.IncludeXmlComments(xmlPath_model, true);
                 #region Token绑定到ConfigureServices
                 //添加header验证信息
                 c.OperationFilter<AddResponseHeadersFilter>();
@@ -126,7 +129,7 @@ namespace MyWebApiProject
                 {
                     Description = "JWT授权(数据将在请求头中进行传输) 直接在下框中输入Bearer {token}（注意两者之间是一个空格）\"",
                     Name = "Authorization",
-                    In = ParameterLocation.Header,
+                    In = ParameterLocation.Header,//jwt默认存放Authorization信息的位置(请求头中)
                     Type = SecuritySchemeType.ApiKey
                 });
                 #endregion
@@ -154,7 +157,7 @@ namespace MyWebApiProject
             //授权中间件
             app.UseAuthorization();
 
-
+            app.UseMiniProfiler();//miniProfiler分析器的中间件
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute("default",
@@ -168,6 +171,7 @@ namespace MyWebApiProject
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApiHelp V1");
                 c.RoutePrefix = "";
+                c.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("MyWebApiProject.index.html");
             });
             #endregion
         }
@@ -199,14 +203,13 @@ namespace MyWebApiProject
             builder.RegisterAssemblyTypes(assemblyServices)
                 .AsImplementedInterfaces()
                 .InstancePerDependency()
-                .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy
+                .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy//
                 .InterceptedBy(cacheType.ToArray());//允许将拦截器服务的列表分配给注册。
             // 获取 Repository.dll 程序集服务，并注册
             var assemblysRepository = Assembly.LoadFrom(repositoryDllFile);
             builder.RegisterAssemblyTypes(assemblysRepository)
                 .AsImplementedInterfaces()
                 .InstancePerDependency();
-            // .EnableInterfaceInterceptors();
             #endregion
         }
     }

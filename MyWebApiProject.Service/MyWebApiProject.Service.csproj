@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MyWebApiProject.Common\MyWebApiProject.Common.csproj" />
     <ProjectReference Include="..\MyWebApiProject.IRepository\MyWebApiProject.IRepository.csproj" />
     <ProjectReference Include="..\MyWebApiProject.IService\MyWebApiProject.IService.csproj" />
   </ItemGroup>

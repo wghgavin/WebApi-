@@ -82,7 +82,7 @@ namespace MyWebApiProject.AOP
             if (typeof(Task).IsAssignableFrom(type))
             {
                 var resultProperty = type.GetProperty("Result");
-                dataIntercept += ($"【执行完成结构】：{JsonConvert.SerializeObject(resultProperty.GetValue(invocation.ReturnValue))}");
+                dataIntercept += ($"【执行完成结果】：{JsonConvert.SerializeObject(resultProperty.GetValue(invocation.ReturnValue))}");
             }
             else
             {

@@ -6,6 +6,7 @@ using MyWebApiProject.Model.DbModel;
 using MyWebApiProject.Service.Base;
 using MyWebApiProject.IRepository;
 using System.Threading.Tasks;
+using MyWebApiProject.Common;
 
 namespace MyWebApiProject.Service
 {
@@ -17,7 +18,8 @@ namespace MyWebApiProject.Service
             this.dal = dal;
             base.baseDal = dal;
         }
-       public async Task<List<UserEntity>> getBlogs()
+        [Caching(AbsoluteExpiration = 30)]
+        public async Task<List<UserEntity>> getBlogs()
         {
             return await dal.Query();
         }

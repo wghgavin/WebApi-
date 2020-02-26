@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyWebApiProject.Common;
 using MyWebApiProject.IService;
 using MyWebApiProject.Model.DbModel;
+using StackExchange.Profiling;
 
 namespace MyWebApiProject.Controllers
 {
@@ -24,10 +26,22 @@ namespace MyWebApiProject.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GetAllGoodsInfo")]
-        [Caching(AbsoluteExpiration=30)]
+        
         public async Task<List<GoodsEntity>> GetAllGoodsInfo()
         {
-            return await goodsService.Query();
+            using (MiniProfiler.Current.Step("Get方法"))
+            {
+                using (MiniProfiler.Current.Step("准备数据"))
+                {
+                    using (MiniProfiler.Current.CustomTiming("SQL", "SELECT * FROM Config"))
+                    {
+                        // 模拟一个SQL查询
+                        Thread.Sleep(500);
+
+                    }
+                }
+                return await goodsService.Query();
+            }
         }
     }
 }

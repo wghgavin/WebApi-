@@ -1,4 +1,5 @@
-﻿using MyWebApiProject.IRepository.Base;
+﻿using MyWebApiProject.Common;
+using MyWebApiProject.IRepository.Base;
 using MyWebApiProject.IService.Base;
 using System;
 using System.Collections.Generic;
@@ -118,6 +119,7 @@ namespace MyWebApiProject.Service.Base
         /// 作　　者:AZLinli.Blog.Core
         /// </summary>
         /// <returns>数据列表</returns>
+        [Caching]
         public async Task<List<TEntity>> Query()
         {
             return await baseDal.Query();
