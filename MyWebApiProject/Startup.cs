@@ -31,6 +31,7 @@ using Microsoft.AspNetCore.Http;
 using MyWebApiProject.Middlewares;
 using MyWebApiProject.Common.Hubs;
 using MyWebApiProject.Extensions;
+using MyWebApiProject.Common.Redis;
 
 namespace MyWebApiProject
 {
@@ -49,12 +50,13 @@ namespace MyWebApiProject
         {
             BaseDbConfig.ConnectionString = Configuration.GetSection("AppSettings:MySqlConnectionString").Value;
             services.AddControllers();
-            services.AddSignalR();
+            services.AddSingleton<IRedisCacheManager, RedisCacheManager>();
             services.AddSingleton(new Appsettings(Env.ContentRootPath));
             services.AddSingleton(new LogLock(Env.ContentRootPath));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMemoryCacheSetup();
             services.AddMiniProfilerSetUp();
+            services.AddSignalR();
             #region JWT »œ÷§
             #region ¥˙¬ÎºÚΩ‡∞Ê
             services

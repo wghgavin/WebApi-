@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using MyWebApiProject.AuthHelper;
 using MyWebApiProject.IService;
 using MyWebApiProject.Model.DbModel;
+using StackExchange.Profiling;
+
 namespace MyWebApiProject.Controllers
 {
     [Route("api/[controller]/[action]")]
@@ -27,7 +29,6 @@ namespace MyWebApiProject.Controllers
         //[Route("GetBlogs")]
         public async Task<List<UserEntity>> GetBlogs()
         {
-
             return await userService.getBlogs();
         }
         /// <summary>
@@ -43,7 +44,7 @@ namespace MyWebApiProject.Controllers
             TokenModelJwt tokenModel = new TokenModelJwt { Uid = 1, Role = "Admin" };
             var jwtStr = JwtHelper.IssueJwt(tokenModel);//登录，获取到一定规则的 Token 令牌
             var suc = true;
-            return  Ok(new
+            return Ok(new
             {
                 success = suc,
                 token = jwtStr
@@ -54,10 +55,10 @@ namespace MyWebApiProject.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GetAllUserInfo")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<List<UserEntity>> GetAllUserInfo()
         {
-            return await userService.Query(it=>it.UserName!="SuperUser");
+            return await userService.Query(it => it.UserName != "SuperUser");
         }
         /// <summary>
         /// 根据密码获取超级用户信息
@@ -67,7 +68,7 @@ namespace MyWebApiProject.Controllers
         [HttpGet(Name = "GetUserInfoByPwd")]
         public async Task<List<UserEntity>> GetUserInfoByPwd(string pwd)
         {
-            return await userService.Query(it => it.PassWord == pwd&&it.UserName=="SuperUser");
+            return await userService.Query(it => it.PassWord == pwd && it.UserName == "SuperUser");
         }
         /// <summary>
         /// 根据用户名获取用户信息
@@ -77,7 +78,7 @@ namespace MyWebApiProject.Controllers
         [HttpGet(Name = "GetUserInfoByUserName")]
         public async Task<List<UserEntity>> GetUserInfoByUserName(string userName)
         {
-            return await userService.Query(it=> it.UserName == userName);
+            return await userService.Query(it => it.UserName == userName);
         }
         /// <summary>
         /// 根据用户名和密码获取用户信息
@@ -86,9 +87,9 @@ namespace MyWebApiProject.Controllers
         /// <param name="pwd"></param>
         /// <returns></returns>
         [HttpGet(Name = "GetUserByUserNameAndPwd")]
-        public async Task<List<UserEntity>> GetUserByUserNameAndPwd(string userName,string pwd)
+        public async Task<List<UserEntity>> GetUserByUserNameAndPwd(string userName, string pwd)
         {
-            return await userService.Query(it => it.UserName == userName&&it.PassWord==pwd);
+            return await userService.Query(it => it.UserName == userName && it.PassWord == pwd);
         }
         /// <summary>
         /// 增加用户信息
@@ -97,18 +98,18 @@ namespace MyWebApiProject.Controllers
         /// <returns></returns>
         [HttpPost(Name = "AddUserInfo")]
         public async Task<int> AddUserInfo(UserEntity userEntity)
-        {  
-         return  await userService.Add(userEntity);
+        {
+            return await userService.Add(userEntity);
         }
         /// <summary>
         /// 根据用户名删除
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        [HttpDelete("{userName}",Name = "DeleteUserInfo")]
+        [HttpDelete("{userName}", Name = "DeleteUserInfo")]
         public async Task<bool> DeleteUserInfo(string userName)
         {
-           return await userService.DeleteByExpression(it=>it.UserName==userName);
+            return await userService.DeleteByExpression(it => it.UserName == userName);
         }
     }
 }
