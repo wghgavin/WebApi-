@@ -13,7 +13,7 @@ namespace MyWebApiProject.Common.Redis
         private readonly object redisConnectionLock = new object();
         public RedisCacheManager()
         {
-            string redisConfiguration = Appsettings.app(new string[] { "AppSettings", "RedisCaching", "ConnectionString" });//获取连接字符串
+            string redisConfiguration = Appsettings.app(new string[] { "AppSettings", "RedisCachingAOP", "ConnectionString" });//获取连接字符串
             if (string.IsNullOrWhiteSpace(redisConfiguration))
             {
                 throw new ArgumentException("redis config is empty", nameof(redisConfiguration));

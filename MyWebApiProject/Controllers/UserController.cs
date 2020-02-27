@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyWebApiProject.AuthHelper;
 using MyWebApiProject.IService;
+using MyWebApiProject.Model;
 using MyWebApiProject.Model.DbModel;
 using StackExchange.Profiling;
 
@@ -20,7 +21,7 @@ namespace MyWebApiProject.Controllers
         public UserController(IUserService userService)
         {
             this.userService = userService;
-        }
+        } 
         /// <summary>
         /// 获取博客列表
         /// </summary>

@@ -10,6 +10,6 @@ namespace MyWebApiProject.Common.MemoryCache
     public interface ICaching
     {
         object Get(string cacheKey);
-        void Set(string cacheKey, object cacheValue);
+        void Set(string cacheKey, object cacheValue,TimeSpan timeSpan);
     }
 }

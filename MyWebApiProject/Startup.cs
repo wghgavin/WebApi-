@@ -69,10 +69,10 @@ namespace MyWebApiProject
                     ValidIssuer = Configuration["Audience:Issuer"],
                     ValidAudience = Configuration["Audience:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Audience:Secret"])),
-                      // 默认允许 300s  的时间偏移量，设置为0
-                      ClockSkew = TimeSpan.Zero
+                    // 默认允许 300s  的时间偏移量，设置为0
+                    ClockSkew = TimeSpan.Zero
                 };
-            }); 
+            });
             #endregion
             #region 代码复杂版
             //#region 参数
@@ -144,13 +144,13 @@ namespace MyWebApiProject
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
+
             //app.UseSignalRSendMildd();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -166,7 +166,7 @@ namespace MyWebApiProject
                           "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapHub<ChatHub>("/chatHub");
             });
-       
+
             #region Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -180,7 +180,7 @@ namespace MyWebApiProject
         public void ConfigureContainer(ContainerBuilder builder)
         {
             var basePath = Microsoft.DotNet.PlatformAbstractions.ApplicationEnvironment.ApplicationBasePath;
-            #region  Service.dll和Repository.dll注入
+            #region  Service.dll和Repository.dll注入，AOP注入
             var servicesDllFile = Path.Combine(basePath, "MyWebApiProject.Service.dll");
             var repositoryDllFile = Path.Combine(basePath, "MyWebApiProject.Repository.dll");
             if (!(File.Exists(servicesDllFile) && File.Exists(repositoryDllFile)))
@@ -190,12 +190,17 @@ namespace MyWebApiProject
 
             // AOP 开关，如果想要打开指定的功能，只需要在 appsettigns.json 对应对应 true 就行。
             var cacheType = new List<Type>();
-            if(Appsettings.app(new string[] { "AppSettings", "MemoryCachingAOP", "Enabled" }).ObjToBool())
+            if (Appsettings.app(new string[] { "AppSettings", "RedisCachingAOP", "Enabled" }).ObjToBool())
+            {
+                builder.RegisterType<MyApiRedisCacheAOP>();
+                cacheType.Add(typeof(MyApiRedisCacheAOP));
+            }
+            if (Appsettings.app(new string[] { "AppSettings", "MemoryCachingAOP", "Enabled" }).ObjToBool())
             {
                 builder.RegisterType<MyApiCacheAOP>();
                 cacheType.Add(typeof(MyApiCacheAOP));
             }
-            if(Appsettings.app(new string[] { "AppSettings", "LogAOP", "Enabled" }).ObjToBool())
+            if (Appsettings.app(new string[] { "AppSettings", "LogAOP", "Enabled" }).ObjToBool())
             {
                 builder.RegisterType<MyApiLogAOP>();
                 cacheType.Add(typeof(MyApiLogAOP));
