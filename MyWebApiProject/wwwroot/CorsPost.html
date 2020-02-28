@@ -14,7 +14,7 @@
           $(document).ready(function () {
             $("#jsonp").click(function () {
 
-                $.getJSON("/api/User/Getjsonp?callBack=?", function (data) {
+                $.getJSON("http://192.168.200.111:5000/api/User/Getjsonp?callBack=?", function (data) {
                     $("#data-jsonp").html("数据: " + data.value);
                 });
             });

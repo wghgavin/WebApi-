@@ -22,16 +22,17 @@ namespace MyWebApiProject
             UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
-                      //.UseUrls("http://localhost:8081")
-                      //.ConfigureLogging((hostingContext, builder) =>
-                      //  {
-                      //      builder.ClearProviders();
-                      //      builder.SetMinimumLevel(LogLevel.Trace);
-                      //      builder.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                      //      builder.AddConsole();
-                      //      builder.AddDebug();
-                      //  });
+                    webBuilder.UseStartup<Startup>()
+                    //webBuilder.ConfigureKestrel(options => options.ListenAnyIP(5000));//用于局域网
+                    .UseUrls("http://*:5000");//用于局域网
+                    //.ConfigureLogging((hostingContext, builder) =>
+                    //  {
+                    //      builder.ClearProviders();
+                    //      builder.SetMinimumLevel(LogLevel.Trace);
+                    //      builder.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                    //      builder.AddConsole();
+                    //      builder.AddDebug();
+                    //  });
                 });
     }
 }
