@@ -55,8 +55,10 @@ namespace MyWebApiProject
             services.AddSingleton(new LogLock(Env.ContentRootPath));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMemoryCacheSetup();
+            services.AddCorsSetup();
             services.AddMiniProfilerSetUp();
             services.AddSignalR();
+            
             #region JWT 认证
             #region 代码简洁版
             services
@@ -148,8 +150,15 @@ namespace MyWebApiProject
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHttpsRedirection();
+            app.UseCors("LimitRequests");
+            //跳转https
+            //app.UseHttpsRedirection();
+            // 使用静态文件
+            app.UseStaticFiles();
+            // 使用cookie
+            app.UseCookiePolicy();
+            // 返回错误码
+            app.UseStatusCodePages();//把错误码返回前台，比如是404
 
             app.UseRouting();
             //开启认证

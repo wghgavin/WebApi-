@@ -20,7 +20,7 @@
             });
 
             $("#cors").click(function () {
-                $.get("/api/Login/Token", function (data, status) {
+                $.get("http://192.168.200.111:5000/api/User/GetJwtStr", function (data, status) {
                     console.log(data);
                     $("#status-cors").html("状态: " + status);
                     $("#data-cors").html("数据: " + data? data.token:"失败");
