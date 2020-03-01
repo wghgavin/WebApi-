@@ -58,6 +58,7 @@ namespace MyWebApiProject
             services.AddCorsSetup();
             services.AddMiniProfilerSetUp();
             services.AddSignalR();
+            services.AddAutoMapperSetup();
             
             #region JWT »œ÷§
             #region ¥˙¬ÎºÚΩ‡∞Ê

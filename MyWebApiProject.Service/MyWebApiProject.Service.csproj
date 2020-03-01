@@ -5,8 +5,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>D:\学习代码\WebApi框架\WebApi-\MyWebApiProject\bin\Debug\</OutputPath>
+    <OutputPath>E:\GitHub代码库\WebApi框架\WebApi-\MyWebApiProject\bin\Debug\</OutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MyWebApiProject.Common\MyWebApiProject.Common.csproj" />

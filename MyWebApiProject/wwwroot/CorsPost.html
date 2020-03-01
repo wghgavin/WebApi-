@@ -14,13 +14,13 @@
           $(document).ready(function () {
             $("#jsonp").click(function () {
 
-                $.getJSON("http://192.168.200.111:5000/api/User/Getjsonp?callBack=?", function (data) {
+                $.getJSON("http://192.168.31.132:5000/api/User/Getjsonp?callBack=?", function (data) {
                     $("#data-jsonp").html("数据: " + data.value);
                 });
             });
 
             $("#cors").click(function () {
-                $.get("http://192.168.200.111:5000/api/User/GetJwtStr", function (data, status) {
+                $.get("http://192.168.31.132:5000/api/User/GetJwtStr", function (data, status) {
                     console.log(data);
                     $("#status-cors").html("状态: " + status);
                     $("#data-cors").html("数据: " + data? data.token:"失败");

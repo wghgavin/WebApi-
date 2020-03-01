@@ -19,8 +19,8 @@ namespace MyWebApiProject.Extensions
                 //    policy
                 //    .AllowAnyOrigin()//允许任何源
                 //    .AllowAnyMethod()//允许任何方式
-                //    .AllowAnyHeader()//允许任何头
-                //    .AllowCredentials();//允许cookie
+                //    .AllowAnyHeader();//允许任何头
+                //    //.AllowCredentials();//允许cookie
                 //});
                 //一般采用这种方法
                 c.AddPolicy("LimitRequests", policy =>

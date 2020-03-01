@@ -6,7 +6,7 @@ using MyWebApiProject.Model.DbModel;
 using MyWebApiProject.Repository.Base;
 namespace MyWebApiProject.Repository
 {
-    class OrderInfoRepository:BaseRepository<OrderInfoEntity>,IOrderInfoRepository
+   public class OrderInfoRepository:BaseRepository<OrderInfoEntity>,IOrderInfoRepository
     {
     }
 }
