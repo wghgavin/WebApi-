@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using log4net;
+using System.Xml;
+using System.IO;
+using System.Reflection;
 
 namespace MyWebApiProject
 {
@@ -14,6 +18,9 @@ namespace MyWebApiProject
     {
         public static void Main(string[] args)
         {
+            XmlDocument log4netConfig = new XmlDocument();
+            log4netConfig.Load(File.OpenRead("Log4net.config"));
+            //var repo = LogManager.CreateRepository(Assembly.GetEntryAssembly(),typeof)
             CreateHostBuilder(args).Build().Run();
         }
 
