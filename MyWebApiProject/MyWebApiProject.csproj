@@ -30,7 +30,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
     <PackageReference Include="Microsoft.OpenApi" Version="1.1.4" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0-preview1-19509-03" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.1.0" />
     <PackageReference Include="MiniProfiler.Shared" Version="4.1.0" />
     <PackageReference Include="sqlSugarCore" Version="5.0.0.11" />
@@ -41,6 +41,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyWebApiProject.Common\MyWebApiProject.Common.csproj" />
+    <ProjectReference Include="..\MyWebApiProject.IRepository\MyWebApiProject.IRepository.csproj" />
     <ProjectReference Include="..\MyWebApiProject.IService\MyWebApiProject.IService.csproj" />
     <ProjectReference Include="..\MyWebApiProject.Model\MyWebApiProject.Model.csproj" />
   </ItemGroup>

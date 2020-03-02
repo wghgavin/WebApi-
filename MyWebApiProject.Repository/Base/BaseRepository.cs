@@ -1,5 +1,6 @@
 ﻿using MyWebApiProject.Common.DB;
 using MyWebApiProject.IRepository.Base;
+using MyWebApiProject.IRepository.UnitOfWork;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -9,33 +10,21 @@ using System.Threading.Tasks;
 
 namespace MyWebApiProject.Repository.Base
 {
-  public class BaseRepository<TEntity>:IBaseRepository<TEntity> where TEntity:class,new()
+    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, new()
     {
-        private DbContext context;
-        private SqlSugarClient db;
-        private SimpleClient<TEntity> entityDB;
-
-        public DbContext Context
+        // private DbContext context;//这个是用来初始化数据库的，现在放到注入里面去初始化
+        //private SimpleClient<TEntity> entityDB;//这个去掉，能直接拿到表
+        private SqlSugarClient db;        
+        private readonly IUnitOfWork _unitOfWork;
+        public BaseRepository(IUnitOfWork unitOfWork)
         {
-            get { return context; }
-            set { context = value; }
-        }
-        internal SqlSugarClient Db
-        {
-            get { return db; }
-            private set { db = value; }
-        }
-        internal SimpleClient<TEntity> EntityDB
-        {
-            get { return entityDB; }
-            private set { entityDB = value; }
-        }
-        public BaseRepository()
-        {
-            DbContext.Init(BaseDbConfig.ConnectionString);
-            context = DbContext.GetDbContext();
-            db = context.Db;
-            entityDB = context.GetEntityDB<TEntity>(db);
+            //DbContext.Init(BaseDbConfig.ConnectionString);
+            // context = DbContext.GetDbContext();
+            //db = context.Db;
+            //entityDB = context.GetEntityDB<TEntity>(db);
+            _unitOfWork = unitOfWork;
+            db = unitOfWork.GetDbClient();
+            //自动生成一个表
             db.CodeFirst.SetStringDefaultLength(200/*设置varchar默认长度为200*/).InitTables(typeof(TEntity));
         }
         /// <summary>
@@ -170,7 +159,7 @@ namespace MyWebApiProject.Repository.Base
         /// <returns>数据列表</returns>
         public async Task<List<TEntity>> Query()
         {
-            return await Task.Run(() => entityDB.GetList());
+            return await db.Queryable<TEntity>().ToListAsync();
         }
         /// <summary>
         /// 功能描述:查询数据列表
@@ -188,7 +177,8 @@ namespace MyWebApiProject.Repository.Base
         /// <returns>数据列表</returns>
         public async Task<List<TEntity>> Query(Expression<Func<TEntity, bool>> whereExpression)
         {
-            return await Task.Run(() => entityDB.GetList(whereExpression));
+            // return await Task.Run(() => entityDB.GetList(whereExpression));
+            return await db.Queryable<TEntity>().WhereIF(whereExpression != null, whereExpression).ToListAsync();
         }
         /// <summary>
         /// 功能描述:查询一个列表

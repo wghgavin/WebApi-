@@ -25,14 +25,6 @@ namespace MyWebApiProject
                     webBuilder.UseStartup<Startup>()
                     //webBuilder.ConfigureKestrel(options => options.ListenAnyIP(5000));//用于局域网
                     .UseUrls("http://0.0.0.0:5000");//用于局域网和https://*:5000效果一样
-                    //.ConfigureLogging((hostingContext, builder) =>
-                    //  {
-                    //      builder.ClearProviders();
-                    //      builder.SetMinimumLevel(LogLevel.Trace);
-                    //      builder.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                    //      builder.AddConsole();
-                    //      builder.AddDebug();
-                    //  });
                 });
     }
 }

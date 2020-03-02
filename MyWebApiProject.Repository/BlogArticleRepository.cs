@@ -1,4 +1,5 @@
 ﻿using MyWebApiProject.IRepository;
+using MyWebApiProject.IRepository.UnitOfWork;
 using MyWebApiProject.Model.TestModel;
 using MyWebApiProject.Repository.Base;
 using System;
@@ -9,5 +10,8 @@ namespace MyWebApiProject.Repository
 {
    public class BlogArticleRepository : BaseRepository<BlogArticle>, IBlogArticleRepository
     {
+        public BlogArticleRepository(IUnitOfWork unitOfWork):base(unitOfWork)
+        {
+        }
     }
 }

@@ -59,6 +59,7 @@ namespace MyWebApiProject
             services.AddMiniProfilerSetUp();
             services.AddSignalR();
             services.AddAutoMapperSetup();
+            services.AddSqlsugarSetup();
             
             #region JWT »œ÷§
             #region ¥˙¬ÎºÚΩ‡∞Ê
