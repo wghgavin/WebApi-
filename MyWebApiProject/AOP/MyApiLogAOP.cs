@@ -47,7 +47,6 @@ namespace MyWebApiProject.AOP
                     {
                         invocation.ReturnValue = InternalAsyncHelper.AwaitTaskWithPostActionAndFinally(
                             (Task)invocation.ReturnValue,
-                            async () => await TestActionAsync(invocation),
                              ex =>
                              {
                                  LogEx(ex, ref dataIntercept);
@@ -59,7 +58,6 @@ namespace MyWebApiProject.AOP
                          invocation.ReturnValue = InternalAsyncHelper.CallAwaitTaskWithPostActionAndFinallyAndGetResult(
                          invocation.Method.ReturnType.GenericTypeArguments[0],
                          invocation.ReturnValue,
-                         async () => await TestActionAsync(invocation),
                          ex =>
                          {
                              LogEx(ex, ref dataIntercept);
@@ -91,7 +89,7 @@ namespace MyWebApiProject.AOP
             
             Parallel.For(0, 1, e => {
                 LogLock.OutSql2Log("AOPLog", new string[] { dataIntercept });
-            });
+            });//多线程并行的for循环
             _hubContext.Clients.All.SendAsync("ReceiveUpdate", LogLock.GetLogData()).Wait();
 
 
@@ -122,13 +120,13 @@ namespace MyWebApiProject.AOP
     }
     internal static class InternalAsyncHelper
     {
-        public static async Task AwaitTaskWithPostActionAndFinally(Task actualReturnValue, Func<Task> postAction, Action<Exception> finalAction)
+        public static async Task AwaitTaskWithPostActionAndFinally(Task actualReturnValue, Action<Exception> finalAction)
         {
             Exception exception = null;
             try
             {
                 await actualReturnValue;
-                await postAction();
+                
             }
             catch (Exception ex)
             {
@@ -139,13 +137,12 @@ namespace MyWebApiProject.AOP
                 finalAction(exception);
             }
         }
-        public static async Task<T> AwaitTaskWithPostActionAndFinallyAndGetResult<T>(Task<T> actualReturnValue, Func<Task> postAction, Action<Exception> finalAction)
+        public static async Task<T> AwaitTaskWithPostActionAndFinallyAndGetResult<T>(Task<T> actualReturnValue, Action<Exception> finalAction)
         {
             Exception exception = null;
             try
             {
                 var result = await actualReturnValue;
-                await postAction();
                 return result;
             }
             catch (Exception ex)
@@ -158,12 +155,12 @@ namespace MyWebApiProject.AOP
                 finalAction(exception);
             }
         }
-        public static object CallAwaitTaskWithPostActionAndFinallyAndGetResult(Type taskReturnType, object actualReturnValue, Func<Task> action, Action<Exception> finalAction)
+        public static object CallAwaitTaskWithPostActionAndFinallyAndGetResult(Type taskReturnType, object actualReturnValue, Action<Exception> finalAction)
         {
             return typeof(InternalAsyncHelper)
                 .GetMethod("AwaitTaskWithPostActionAndFinallyAndGetResult", BindingFlags.Public | BindingFlags.Static)
                 .MakeGenericMethod(taskReturnType)
-                .Invoke(null, new object[] { actualReturnValue, action, finalAction });
+                .Invoke(null, new object[] { actualReturnValue, finalAction });
         }
     }
 }

@@ -48,18 +48,6 @@ namespace MyWebApiProject.Service
                         prevblog = blogIndex > 0 ? bloglist[blogIndex - 1] : null;
                         //下一篇
                         nextblog = blogIndex + 1 < bloglist.Count() ? bloglist[blogIndex + 1] : null;
-                        // models = new BlogViewModels()
-                        //{
-                        //    bsubmitter = blogArticle.bsubmitter,
-                        //    btitle = blogArticle.btitle,
-                        //    bcategory = blogArticle.bcategory,
-                        //    bcontent = blogArticle.bcontent,
-                        //    btraffic = blogArticle.btraffic,
-                        //    bcommentNum = blogArticle.bcommentNum,
-                        //    bUpdateTime = blogArticle.bUpdateTime,
-                        //    bCreateTime = blogArticle.bCreateTime,
-                        //    bRemark = blogArticle.bRemark,
-                        //};
                         models = _mapper.Map<BlogViewModels>(blogArticle);
                         if (nextblog != null)
                         {

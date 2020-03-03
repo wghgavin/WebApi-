@@ -32,13 +32,21 @@ using MyWebApiProject.Middlewares;
 using MyWebApiProject.Common.Hubs;
 using MyWebApiProject.Extensions;
 using MyWebApiProject.Common.Redis;
+using log4net.Repository;
+using log4net;
+using log4net.Config;
+using MyWebApiProject.Log4;
+using MyWebApiProject.Filter;
 
 namespace MyWebApiProject
 {
     public class Startup
     {
+        public static ILoggerRepository repository { get; set; }
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
+            repository = LogManager.CreateRepository("");//需要获取日志的仓库名，也就是你的当前项目名
+            XmlConfigurator.Configure(repository, new FileInfo("log4net.config"));//配置文件
             Configuration = configuration;
             Env = env;
         }
@@ -60,7 +68,12 @@ namespace MyWebApiProject
             services.AddSignalR();
             services.AddAutoMapperSetup();
             services.AddSqlsugarSetup();
-            
+            services.AddSingleton<ILogHelper, LogHelper>();
+            services.AddControllers(o =>
+            {
+                // 全局异常过滤
+                o.Filters.Add(typeof(GlobalExceptionsFilter));
+            });
             #region JWT 认证
             #region 代码简洁版
             services
@@ -175,7 +188,6 @@ namespace MyWebApiProject
                           "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapHub<ChatHub>("/chatHub");
             });
-
             #region Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -196,7 +208,6 @@ namespace MyWebApiProject
             {
                 throw new Exception("Repository.dll和service.dll 丢失，因为项目解耦了，需要先F6编译，再F5运行，请检查 bin 文件夹，并拷贝。");
             }
-
             // AOP 开关，如果想要打开指定的功能，只需要在 appsettigns.json 对应对应 true 就行。
             var cacheType = new List<Type>();
             if (Appsettings.app(new string[] { "AppSettings", "RedisCachingAOP", "Enabled" }).ObjToBool())
@@ -221,11 +232,11 @@ namespace MyWebApiProject
                 .InstancePerDependency()
                 .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy//
                 .InterceptedBy(cacheType.ToArray());//允许将拦截器服务的列表分配给注册。
-            // 获取 Repository.dll 程序集服务，并注册
-            var assemblysRepository = Assembly.LoadFrom(repositoryDllFile);
-            builder.RegisterAssemblyTypes(assemblysRepository)
-                .AsImplementedInterfaces()
-                .InstancePerDependency();
+            //获取 Repository.dll 程序集服务，并注册
+           //var assemblysRepository = Assembly.LoadFrom(repositoryDllFile);
+           // builder.RegisterAssemblyTypes(assemblysRepository)
+           //     .AsImplementedInterfaces()
+           //     .InstancePerDependency();
             #endregion
         }
     }
