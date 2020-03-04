@@ -27,7 +27,7 @@ namespace MyWebApiProject.Middlewares
         }
         public async Task InvokeAsync(HttpContext context)
         {
-            if (Appsettings.app("Middleware", "SignalR", "Enabled").ObjToBool())
+            if (Appsettings.app("Middleware", "SignalR", "Enabled").ObjectToBool())
             {
                 await _hubContext.Clients.All.SendAsync("ReceiveUpdate", LogLock.GetLogData());
             }

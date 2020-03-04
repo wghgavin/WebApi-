@@ -63,8 +63,8 @@ namespace MyWebApiProject.AuthHelper
             }
             var tm = new TokenModelJwt
             {
-                Uid = (jwtToken.Id).ObjToInt(),
-                Role = role != null ? role.ObjToString() : "",
+                Uid = (jwtToken.Id).ObjectToInt(),
+                Role = role != null ? role.ObjectToString() : "",
             };
             return tm;
         }

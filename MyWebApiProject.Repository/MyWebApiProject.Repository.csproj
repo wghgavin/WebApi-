@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MiniProfiler.Shared" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MyWebApiProject.Common\MyWebApiProject.Common.csproj" />
     <ProjectReference Include="..\MyWebApiProject.IRepository\MyWebApiProject.IRepository.csproj" />
   </ItemGroup>

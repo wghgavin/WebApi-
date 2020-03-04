@@ -20,14 +20,25 @@ namespace MyWebApiProject.Extensions
             //MainDb.CurrentDbConnId = Appsettings.app(new string[] { "MainDB" });
             services.AddScoped<ISqlSugarClient>(o =>
             {
-                return new SqlSugarClient(new ConnectionConfig()
-                {
-                    ConnectionString = BaseDbConfig.ConnectionString,
-                    DbType = DbType.MySql,
-                    IsAutoCloseConnection = true,//默认false, 时候知道关闭数据库连接, 设置为true无需使用using或者Close操作
-                    InitKeyType = SqlSugar.InitKeyType.Attribute//默认SystemTable, 字段信息读取, 如：该属性是不是主键，标识列等等
+                var listConfig = new List<ConnectionConfig>();
+                BaseDbConfig.MutiConnectionString.ForEach(m => {
+                    listConfig.Add(new ConnectionConfig { 
+                       ConfigId =m.ConnId,
+                       ConnectionString=m.ConnStr,
+                       DbType = (DbType)m.DbType,
+                       IsAutoCloseConnection = true,//自动关闭，不用close了,
+                       IsShardSameThread = false,
+                       AopEvents = new AopEvents
+                       {
+                           OnLogExecuted = (sql, p) => { 
+                           //多库操作此处暂时无效果,在另一个地方
+                           }
+                       },
+                       MoreSettings = new ConnMoreSettings { IsAutoRemoveDataCache = true}
+                    });
                 });
 
+                return new SqlSugarClient(listConfig);
             });
         }
     }

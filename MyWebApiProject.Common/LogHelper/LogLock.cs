@@ -108,7 +108,7 @@ namespace MyWebApiProject.Common.LogHelper
                     aopLogs = aoplogContent.Split("--------------------------------")
                    .Where(d => !string.IsNullOrEmpty(d) && d != "\n" && d != "\r\n")
                    .Select(d => new LogInfo {
-                       Datetime = d.Split("|")[0].ObjToDate(),
+                       Datetime = d.Split("|")[0].ObjectToDate(),
                        Content =d.Split("|")[1]?.Replace("\r\n","<br>"),
                        LogColor = "AOP"
                    }).ToList();
@@ -126,7 +126,7 @@ namespace MyWebApiProject.Common.LogHelper
                                  .Where(d => !string.IsNullOrEmpty(d) && d != "\n" && d != "\r\n")
                                  .Select(d => new LogInfo
                                  {
-                                     Datetime = (d.Split("|")[0]).Split(',')[0].ObjToDate(),
+                                     Datetime = (d.Split("|")[0]).Split(',')[0].ObjectToDate(),
                                      Content = d.Split("|")[1]?.Replace("\r\n", "<br>"),
                                      LogColor = "EXC",
                                      Import = 9,
@@ -145,7 +145,7 @@ namespace MyWebApiProject.Common.LogHelper
                                   .Where(d => !string.IsNullOrEmpty(d) && d != "\n" && d != "\r\n")
                                   .Select(d => new LogInfo
                                   {
-                                      Datetime = d.Split("|")[0].ObjToDate(),
+                                      Datetime = d.Split("|")[0].ObjectToDate(),
                                       Content = d.Split("|")[1]?.Replace("\r\n", "<br>"),
                                       LogColor = "SQL",
                                   }).ToList();
@@ -157,11 +157,11 @@ namespace MyWebApiProject.Common.LogHelper
             {
                 var Logs = JsonConvert.DeserializeObject<List<RequestInfo>>("[" + ReadLog(Path.Combine(_contentRoot, "Log", "RequestIpInfoLog.log"), Encoding.UTF8) + "]");
 
-                Logs = Logs.Where(d => d.Datetime.ObjToDate() >= DateTime.Today).ToList();
+                Logs = Logs.Where(d => d.Datetime.ObjectToDate() >= DateTime.Today).ToList();
 
                 reqresLogs = Logs.Select(d => new LogInfo
                 {
-                    Datetime = d.Datetime.ObjToDate(),
+                    Datetime = d.Datetime.ObjectToDate(),
                     Content = $"IP:{d.Ip}<br>{d.Url}",
                     LogColor = "ReqRes",
                 }).ToList();
@@ -280,8 +280,8 @@ namespace MyWebApiProject.Common.LogHelper
                 Logs = JsonConvert.DeserializeObject<List<RequestInfo>>("[" + ReadLog(Path.Combine(_contentRoot, "Log", "RequestIpInfoLog.log"), Encoding.UTF8) + "]");
 
                 apiDates = (from n in Logs
-                            where n.Datetime.ObjToDate() >= DateTime.Today
-                            group n by new { hour = n.Datetime.ObjToDate().Hour } into g
+                            where n.Datetime.ObjectToDate() >= DateTime.Today
+                            group n by new { hour = n.Datetime.ObjectToDate().Hour } into g
                             select new ApiDate
                             {
                                 date = g.Key.hour.ToString("00"),

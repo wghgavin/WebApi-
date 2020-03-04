@@ -56,7 +56,6 @@ namespace MyWebApiProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            BaseDbConfig.ConnectionString = Configuration.GetSection("AppSettings:MySqlConnectionString").Value;
             services.AddControllers();
             services.AddSingleton<IRedisCacheManager, RedisCacheManager>();
             services.AddSingleton(new Appsettings(Env.ContentRootPath));
@@ -210,17 +209,17 @@ namespace MyWebApiProject
             }
             // AOP 开关，如果想要打开指定的功能，只需要在 appsettigns.json 对应对应 true 就行。
             var cacheType = new List<Type>();
-            if (Appsettings.app(new string[] { "AppSettings", "RedisCachingAOP", "Enabled" }).ObjToBool())
+            if (Appsettings.app(new string[] { "AppSettings", "RedisCachingAOP", "Enabled" }).ObjectToBool())
             {
                 builder.RegisterType<MyApiRedisCacheAOP>();
                 cacheType.Add(typeof(MyApiRedisCacheAOP));
             }
-            if (Appsettings.app(new string[] { "AppSettings", "MemoryCachingAOP", "Enabled" }).ObjToBool())
+            if (Appsettings.app(new string[] { "AppSettings", "MemoryCachingAOP", "Enabled" }).ObjectToBool())
             {
                 builder.RegisterType<MyApiCacheAOP>();
                 cacheType.Add(typeof(MyApiCacheAOP));
             }
-            if (Appsettings.app(new string[] { "AppSettings", "LogAOP", "Enabled" }).ObjToBool())
+            if (Appsettings.app(new string[] { "AppSettings", "LogAOP", "Enabled" }).ObjectToBool())
             {
                 builder.RegisterType<MyApiLogAOP>();
                 cacheType.Add(typeof(MyApiLogAOP));
@@ -232,11 +231,11 @@ namespace MyWebApiProject
                 .InstancePerDependency()
                 .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy//
                 .InterceptedBy(cacheType.ToArray());//允许将拦截器服务的列表分配给注册。
-            //获取 Repository.dll 程序集服务，并注册
-           //var assemblysRepository = Assembly.LoadFrom(repositoryDllFile);
-           // builder.RegisterAssemblyTypes(assemblysRepository)
-           //     .AsImplementedInterfaces()
-           //     .InstancePerDependency();
+                                                    //获取 Repository.dll 程序集服务，并注册
+            var assemblysRepository = Assembly.LoadFrom(repositoryDllFile);
+            builder.RegisterAssemblyTypes(assemblysRepository)
+                .AsImplementedInterfaces()
+                .InstancePerDependency();
             #endregion
         }
     }
