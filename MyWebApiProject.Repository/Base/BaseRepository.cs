@@ -31,7 +31,7 @@ namespace MyWebApiProject.Repository.Base
                     {
                         _dbBase.ChangeDatabase(sugarTable.TableDescription);
                     }
-                    else
+                    else if(_dbBase.CurrentConnectionConfig.ConfigId!=BaseDbConfig.CurrentDbId)
                     {
                         _dbBase.ChangeDatabase(BaseDbConfig.CurrentDbId);
                     }
