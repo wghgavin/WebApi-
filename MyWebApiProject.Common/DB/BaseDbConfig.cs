@@ -14,7 +14,7 @@ namespace MyWebApiProject.Common.DB
     {
         //public static string ConnectionString { get; set; }
         public static List<DBConnInfo> MutiConnectionString => MutiInitConn();
-        public static string CurrentDbId = "MYSQL";
+        public static string CurrentDbId = Appsettings.app(new string[] { "MainDB" });
         private static List<DBConnInfo> MutiInitConn()
         {
             List<DBConnInfo> listDataBase = new List<DBConnInfo>();
@@ -47,9 +47,9 @@ namespace MyWebApiProject.Common.DB
                 if (listDataBase.Count == 1) return listDataBase;
                 else
                 {
-                    string mainDBId = Appsettings.app(new string[] { "MainDB" }).ObjectToString();
-                    var dbFirst = listDataBase.FirstOrDefault(d => d.ConnId == Appsettings.app(new string[] { "MainDB" }).ObjectToString());
-                    if (dbFirst == null) throw new Exception($"请把appsettings文件内的{mainDBId}的Enabled设置为true");
+                    var dbFirst = listDataBase.FirstOrDefault(d => d.ConnId == CurrentDbId);
+                    if (dbFirst == null) throw new Exception($"请把appsettings文件内的{CurrentDbId}的Enabled设置为true");
+                    dbFirst = listDataBase.FirstOrDefault();
                     singleDataBase.Add(dbFirst);
                     return listDataBase;
                 }

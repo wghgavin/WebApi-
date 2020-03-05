@@ -45,9 +45,9 @@ namespace MyWebApiProject.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<List<UserEntity>> GetBlogs()
+        public async Task<List<UserEntity>> GetAllUsers()
         {
-            return await userService.getBlogs();
+            return await userService.GetAllUsers();
         }
         /// <summary>
         /// 获取Token的令牌

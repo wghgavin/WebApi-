@@ -34,7 +34,9 @@ namespace MyWebApiProject.Extensions
                            //多库操作此处暂时无效果,在另一个地方
                            }
                        },
-                       MoreSettings = new ConnMoreSettings { IsAutoRemoveDataCache = true}
+                       MoreSettings = new ConnMoreSettings { IsAutoRemoveDataCache = true},
+                       InitKeyType = InitKeyType.Attribute
+                       
                     });
                 });
 

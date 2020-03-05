@@ -9,6 +9,6 @@ namespace MyWebApiProject.IService
 {
    public interface IUserService:IBaseService<UserEntity>
     {
-        Task<List<UserEntity>> getBlogs();
+        Task<List<UserEntity>> GetAllUsers();
     }
 }

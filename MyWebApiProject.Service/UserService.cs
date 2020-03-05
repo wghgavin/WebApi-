@@ -19,7 +19,7 @@ namespace MyWebApiProject.Service
             base.baseDal = dal;
         }
         [Caching(AbsoluteExpiration = 30)]
-        public async Task<List<UserEntity>> getBlogs()
+        public async Task<List<UserEntity>> GetAllUsers()
         {
             return await dal.Query();
         }
