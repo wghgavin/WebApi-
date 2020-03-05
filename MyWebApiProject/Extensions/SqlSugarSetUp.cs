@@ -28,6 +28,7 @@ namespace MyWebApiProject.Extensions
                        DbType = (DbType)m.DbType,
                        IsAutoCloseConnection = true,//自动关闭，不用close了,
                        IsShardSameThread = false,
+                       InitKeyType = InitKeyType.Attribute,
                        AopEvents = new AopEvents
                        {
                            OnLogExecuted = (sql, p) => { 
