@@ -36,7 +36,6 @@ namespace MyWebApiProject.Extensions
                            }
                        },
                        MoreSettings = new ConnMoreSettings { IsAutoRemoveDataCache = true},
-                       InitKeyType = InitKeyType.Attribute
                        
                     });
                 });

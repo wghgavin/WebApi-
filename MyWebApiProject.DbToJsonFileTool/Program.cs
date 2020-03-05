@@ -11,6 +11,7 @@ namespace MyWebApiProject.DbToJsonFileTool
     class Program
     {
         private static BlockingCollection<dynamic> _queue_dbTable = new BlockingCollection<dynamic>(new ConcurrentQueue<dynamic>());
+        static int num = 0;
         static void Main(string[] args)
         {
             Thread t = new Thread(DealQueueDbTable);
@@ -26,7 +27,6 @@ namespace MyWebApiProject.DbToJsonFileTool
                     _queue_dbTable.Add(new { value = result, name = item.Name });
                 }
             }
-            Console.ReadKey();
         }
         static void DealQueueDbTable()
         {

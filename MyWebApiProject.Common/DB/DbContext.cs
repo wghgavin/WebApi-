@@ -7,8 +7,9 @@ namespace MyWebApiProject.Common.DB
 {
    public class DbContext
     {
-        private static string _connectionString;
-        private static DbType _dbType;
+       private static DBConnInfo connectInfo=> GetMainConnectionDb();
+        private static string _connectionString = connectInfo.ConnStr;
+        private static DbType _dbType = (DbType)connectInfo.DbType;
         private SqlSugarClient _db;
         /// <summary>
         /// 连接字符串 
@@ -49,6 +50,22 @@ namespace MyWebApiProject.Common.DB
                 return new DbContext();
             }
         }
+        private static DBConnInfo GetMainConnectionDb()
+        {
+            var mainConnetctDb = BaseDbConfig.MutiConnectionString.Find(x => x.ConnId == BaseDbConfig.CurrentDbId);
+            if (BaseDbConfig.MutiConnectionString.Count > 0)
+            {
+                if (mainConnetctDb == null)
+                {
+                    mainConnetctDb = BaseDbConfig.MutiConnectionString[0];
+                }
+            }
+            else
+            {
+                throw new Exception("请确保appsettigns.json中配置连接字符串,并设置Enabled为true;");
+            }
+            return mainConnetctDb;
+        }
         private DbContext()
         {
             if (string.IsNullOrEmpty(_connectionString))
@@ -59,6 +76,7 @@ namespace MyWebApiProject.Common.DB
                 DbType = _dbType,
                 IsAutoCloseConnection = true,
                 IsShardSameThread = true,
+                InitKeyType = InitKeyType.Attribute,
                 ConfigureExternalServices = new ConfigureExternalServices()
                 {
                     //DataInfoCacheService = new HttpRuntimeCache()
