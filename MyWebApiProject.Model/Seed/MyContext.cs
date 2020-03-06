@@ -1,13 +1,14 @@
-﻿using SqlSugar;
+﻿using MyWebApiProject.Common.DB;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MyWebApiProject.Common.DB
+namespace MyWebApiProject.Model.Seed
 {
-   public class DbContext
+   public class MyContext
     {
-       private static DBConnInfo connectInfo=> GetMainConnectionDb();
+        private static DBConnInfo connectInfo => GetMainConnectionDb();
         private static string _connectionString = connectInfo.ConnStr;
         private static DbType _dbType = (DbType)connectInfo.DbType;
         private SqlSugarClient _db;
@@ -43,11 +44,11 @@ namespace MyWebApiProject.Common.DB
         /// 数据库上下文实例（自动关闭连接）
         /// Blog.Core 
         /// </summary>
-        public static DbContext Context
+        public static MyContext Context
         {
             get
             {
-                return new DbContext();
+                return new MyContext();
             }
         }
         private static DBConnInfo GetMainConnectionDb()
@@ -66,7 +67,7 @@ namespace MyWebApiProject.Common.DB
             }
             return mainConnetctDb;
         }
-        private DbContext()
+        private MyContext()
         {
             if (string.IsNullOrEmpty(_connectionString))
                 throw new ArgumentNullException("数据库连接字符串为空");
@@ -93,7 +94,7 @@ namespace MyWebApiProject.Common.DB
         /// 作　　者:Blog.Core
         /// </summary>
         /// <param name="blnIsAutoCloseConnection">是否自动关闭连接</param>
-        private DbContext(bool blnIsAutoCloseConnection)
+        private MyContext(bool blnIsAutoCloseConnection)
         {
             if (string.IsNullOrEmpty(_connectionString))
                 throw new ArgumentNullException("数据库连接字符串为空");
@@ -304,9 +305,9 @@ namespace {Namespace}
         /// </summary>
         /// <param name="blnIsAutoCloseConnection">是否自动关闭连接（如果为false，则使用接受时需要手动关闭Db）</param>
         /// <returns>返回值</returns>
-        public static DbContext GetDbContext(bool blnIsAutoCloseConnection = true)
+        public static MyContext GetDbContext(bool blnIsAutoCloseConnection = true)
         {
-            return new DbContext(blnIsAutoCloseConnection);
+            return new MyContext(blnIsAutoCloseConnection);
         }
         /// <summary>
         /// 功能描述:设置初始化参数

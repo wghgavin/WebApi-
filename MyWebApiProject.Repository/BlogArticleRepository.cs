@@ -1,6 +1,6 @@
 ﻿using MyWebApiProject.IRepository;
 using MyWebApiProject.IRepository.UnitOfWork;
-using MyWebApiProject.Model.TestModel;
+using MyWebApiProject.Model.DbModel;
 using MyWebApiProject.Repository.Base;
 using System;
 using System.Collections.Generic;

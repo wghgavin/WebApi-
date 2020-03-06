@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MyWebApiProject.Model;
-using MyWebApiProject.Model.TestModel;
+using MyWebApiProject.Model.DbModel;
 using MyWebApiProject.Model.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -11,15 +11,8 @@ namespace MyWebApiProject.AutoMapper
 {
     public class CustomProfile : Profile
     {
-        //public override string ProfileName
-        //{
-        //    get
-        //    {
-        //        return "CustomProfile";
-        //    }
-        //}
         /// <summary>
-        /// 根据IMapperTo<>接口 自动初始化AutoMapper
+        /// 根据IMapperTo接口 自动初始化AutoMapper
         /// </summary>
         public CustomProfile()
         {

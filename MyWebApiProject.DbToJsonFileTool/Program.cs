@@ -21,7 +21,7 @@ namespace MyWebApiProject.DbToJsonFileTool
             var classes = Assembly.Load("MyWebApiProject.Model").GetTypes();
             foreach (var item in classes)
             {
-                if (item.Namespace.Equals("MyWebApiProject.Model.DbModel") || item.Namespace.Equals("MyWebApiProject.Model.TestModel"))
+                if (item.Namespace.Equals("MyWebApiProject.Model.DbModel"))
                 {
                     string result = dbContext.ExportByClassType(item).Result;
                     _queue_dbTable.Add(new { value = result, name = item.Name });

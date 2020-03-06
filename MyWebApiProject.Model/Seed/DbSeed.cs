@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyWebApiProject.Common.DB
+namespace MyWebApiProject.Model.Seed
 {
    public class DbSeed
     {
@@ -16,7 +16,7 @@ namespace MyWebApiProject.Common.DB
         /// <param name="myContext"></param>
         /// <param name="WebRootPath"></param>
         /// <returns></returns>
-        public static async Task SeedDataAsync(DbContext myContext, string WebRootPath)
+        public static async Task SeedDataAsync(MyContext myContext, string WebRootPath)
         {
             try
             {
@@ -29,19 +29,19 @@ namespace MyWebApiProject.Common.DB
                 Console.WriteLine($"Is multi-DataBase: {Appsettings.app(new string[] { "MutiDBEnabled" })}");
                 if (Appsettings.app(new string[] { "MutiDBEnabled" }).ObjectToBool())
                 {
-                    Console.WriteLine($"Master DB Type: {DbContext.DbType}");
-                    Console.WriteLine($"Master DB ConnectString: {DbContext.ConnectionString}");
+                    Console.WriteLine($"Master DB Type: {MyContext.DbType}");
+                    Console.WriteLine($"Master DB ConnectString: {MyContext.ConnectionString}");
                     Console.WriteLine();
                 }
                 else
                 {
-                    Console.WriteLine("DB Type: " + DbContext.DbType);
-                    Console.WriteLine("DB ConnectString: " + DbContext.ConnectionString);
+                    Console.WriteLine("DB Type: " + MyContext.DbType);
+                    Console.WriteLine("DB ConnectString: " + MyContext.ConnectionString);
                 }
                 Console.WriteLine("Create Database...");
                 myContext.Db.DbMaintenance.CreateDatabase();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }

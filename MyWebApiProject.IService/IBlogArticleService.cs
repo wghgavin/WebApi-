@@ -1,5 +1,5 @@
 ﻿using MyWebApiProject.IService.Base;
-using MyWebApiProject.Model.TestModel;
+using MyWebApiProject.Model.DbModel;
 using MyWebApiProject.Model.ViewModel;
 using System;
 using System.Collections.Generic;

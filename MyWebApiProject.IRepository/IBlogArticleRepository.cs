@@ -1,5 +1,5 @@
 ﻿using MyWebApiProject.IRepository.Base;
-using MyWebApiProject.Model.TestModel;
+using MyWebApiProject.Model.DbModel;
 using System;
 using System.Collections.Generic;
 using System.Text;

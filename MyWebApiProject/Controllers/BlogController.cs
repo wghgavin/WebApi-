@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyWebApiProject.IService;
-using MyWebApiProject.Model.TestModel;
+using MyWebApiProject.Model.DbModel;
 using MyWebApiProject.Model.ViewModel;
 
 namespace MyWebApiProject.Controllers

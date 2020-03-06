@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using MyWebApiProject.IService;
-using MyWebApiProject.Model.TestModel;
 using MyWebApiProject.Service.Base;
 using MyWebApiProject.IRepository;
 using System.Threading.Tasks;
@@ -10,6 +9,7 @@ using MyWebApiProject.Model.ViewModel;
 using System.Linq;
 using MyWebApiProject.Common;
 using AutoMapper;
+using MyWebApiProject.Model.DbModel;
 
 namespace MyWebApiProject.Service
 {
