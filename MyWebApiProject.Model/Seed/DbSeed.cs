@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,10 +42,32 @@ namespace MyWebApiProject.Model.Seed
                 }
                 Console.WriteLine("Create Database...");
                 myContext.Db.DbMaintenance.CreateDatabase();
+                var classes =  Assembly.Load("MyWebApiProject.Model").GetTypes().Where(x=>x.Namespace== "MyWebApiProject.Model.DbModel").ToArray();
+                myContext.CreateTableByEntity(false, classes);
+                Console.WriteLine("Database is  created success!");
+                Console.WriteLine();
+                if (Appsettings.app(new string[] { "AppSettings", "SeedDBDataEnabled" }).ObjectToBool())
+                {
+                    Console.WriteLine("Seeding database...");
+                    foreach(var item in classes)
+                    {
+                       object a = ReflectionUtil.ExportByClassType(typeof(MyContext), item, "ExitList", null);
+                        if (!((ReflectionUtil.ExportByClassType(typeof(MyContext),item, "ExitList", null))as Task<bool>).Result)
+                        {
+                            string json = FileUtil.ReadFile(string.Format(SeedDataFolder, item.Name));
+                            if (json != string.Empty)
+                            {
+                              object obj =  JsonUtil.ParseObjByJson(item, json);
+                             bool result =  (ReflectionUtil.ExportByClassType(typeof(MyContext), item, "InsertTables",new object[] { obj}) as Task<bool>).Result;
+                            }
+                            
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
-
+                throw new Exception(ex.Message);
             }
         }
     }

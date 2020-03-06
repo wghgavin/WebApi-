@@ -3,10 +3,11 @@ using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MyWebApiProject.Model.Seed
 {
-   public class MyContext
+    public class MyContext
     {
         private static DBConnInfo connectInfo => GetMainConnectionDb();
         private static string _connectionString = connectInfo.ConnStr;
@@ -14,7 +15,6 @@ namespace MyWebApiProject.Model.Seed
         private SqlSugarClient _db;
         /// <summary>
         /// 连接字符串 
-        /// Blog.Core
         /// </summary>
         public static string ConnectionString
         {
@@ -23,7 +23,6 @@ namespace MyWebApiProject.Model.Seed
         }
         /// <summary>
         /// 数据库类型 
-        /// Blog.Core 
         /// </summary>
         public static DbType DbType
         {
@@ -32,24 +31,11 @@ namespace MyWebApiProject.Model.Seed
         }
         /// <summary>
         /// 数据连接对象 
-        /// Blog.Core 
         /// </summary>
         public SqlSugarClient Db
         {
             get { return _db; }
             private set { _db = value; }
-        }
-
-        /// <summary>
-        /// 数据库上下文实例（自动关闭连接）
-        /// Blog.Core 
-        /// </summary>
-        public static MyContext Context
-        {
-            get
-            {
-                return new MyContext();
-            }
         }
         private static DBConnInfo GetMainConnectionDb()
         {
@@ -67,7 +53,8 @@ namespace MyWebApiProject.Model.Seed
             }
             return mainConnetctDb;
         }
-        private MyContext()
+        #region 构造函数
+        public MyContext()
         {
             if (string.IsNullOrEmpty(_connectionString))
                 throw new ArgumentNullException("数据库连接字符串为空");
@@ -89,11 +76,6 @@ namespace MyWebApiProject.Model.Seed
                 }
             });
         }
-        /// <summary>
-        /// 功能描述:构造函数
-        /// 作　　者:Blog.Core
-        /// </summary>
-        /// <param name="blnIsAutoCloseConnection">是否自动关闭连接</param>
         private MyContext(bool blnIsAutoCloseConnection)
         {
             if (string.IsNullOrEmpty(_connectionString))
@@ -116,30 +98,31 @@ namespace MyWebApiProject.Model.Seed
                 }
             });
         }
-        #region 实例方法
-        // <summary>
-        /// 功能描述:获取数据库处理对象
-        /// 作　　者:Blog.Core
-        /// </summary>
-        /// <returns>返回值</returns>
+        #endregion
         public SimpleClient<T> GetEntityDB<T>() where T : class, new()
         {
             return new SimpleClient<T>(_db);
         }
-        /// <summary>
-        /// 功能描述:获取数据库处理对象
-        /// 作　　者:Blog.Core
-        /// </summary>
-        /// <param name="db">db</param>
-        /// <returns>返回值</returns>
-        public SimpleClient<T> GetEntityDB<T>(SqlSugarClient db) where T : class, new()
+        #region 数据库查询插入操作
+        public async Task<bool> ExitList<T>()
         {
-            return new SimpleClient<T>(db);
+            return await _db.Queryable<T>().AnyAsync();
         }
+        public async Task<bool> InsertTables<T>(object table) where T : class, new()
+        {
+            if ((table as List<T>) == null)
+            {
+                return false;
+            }
+            return await Task.Run(() => GetEntityDB<T>().InsertRange((List<T>)table));
+        }
+
+        #endregion
+        #region 根据数据库表生产实体类
+
         // <summary>
         /// 功能描述:根据数据库表生产实体类
-        /// 作　　者:Blog.Core
-        /// </summary>       
+        ///</summary>       
         /// <param name="strPath">实体类存放路径</param>
         public void CreateClassFileByDBTalbe(string strPath)
         {
@@ -147,7 +130,6 @@ namespace MyWebApiProject.Model.Seed
         }
         /// <summary>
         /// 功能描述:根据数据库表生产实体类
-        /// 作　　者:Blog.Core
         /// </summary>
         /// <param name="strPath">实体类存放路径</param>
         /// <param name="strNameSpace">命名空间</param>
@@ -298,81 +280,6 @@ namespace {Namespace}
             }
         }
         #endregion
-        #region 静态方法
-        /// <summary>
-        /// 功能描述:获得一个DbContext
-        /// 作　　者:Blog.Core
-        /// </summary>
-        /// <param name="blnIsAutoCloseConnection">是否自动关闭连接（如果为false，则使用接受时需要手动关闭Db）</param>
-        /// <returns>返回值</returns>
-        public static MyContext GetDbContext(bool blnIsAutoCloseConnection = true)
-        {
-            return new MyContext(blnIsAutoCloseConnection);
-        }
-        /// <summary>
-        /// 功能描述:设置初始化参数
-        /// 作　　者:Blog.Core
-        /// </summary>
-        /// <param name="strConnectionString">连接字符串</param>
-        /// <param name="enmDbType">数据库类型</param>
-        public static void Init(string strConnectionString, DbType enmDbType = DbType.MySql)
-        {
-            _connectionString = strConnectionString;
-            _dbType = enmDbType;
-        }
-        /// <summary>
-        /// 功能描述:创建一个链接配置
-        /// 作　　者:Blog.Core
-        /// </summary>
-        /// <param name="blnIsAutoCloseConnection">是否自动关闭连接</param>
-        /// <param name="blnIsShardSameThread">是否夸类事务</param>
-        /// <returns>ConnectionConfig</returns>
-        public static ConnectionConfig GetConnectionConfig(bool blnIsAutoCloseConnection = true, bool blnIsShardSameThread = false)
-        {
-            ConnectionConfig config = new ConnectionConfig()
-            {
-                ConnectionString = _connectionString,
-                DbType = _dbType,
-                IsAutoCloseConnection = blnIsAutoCloseConnection,
-                ConfigureExternalServices = new ConfigureExternalServices()
-                {
-                    //DataInfoCacheService = new HttpRuntimeCache()
-                },
-                IsShardSameThread = blnIsShardSameThread
-            };
-            return config;
-        }
-        /// <summary>
-        /// 功能描述:获取一个自定义的DB
-        /// 作　　者:Blog.Core
-        /// </summary>
-        /// <param name="config">config</param>
-        /// <returns>返回值</returns>
-        public static SqlSugarClient GetCustomDB(ConnectionConfig config)
-        {
-            return new SqlSugarClient(config);
-        }
-        /// <summary>
-        /// 功能描述:获取一个自定义的数据库处理对象
-        /// 作　　者:Blog.Core
-        /// </summary>
-        /// <param name="sugarClient">sugarClient</param>
-        /// <returns>返回值</returns>
-        public static SimpleClient<T> GetCustomEntityDB<T>(SqlSugarClient sugarClient) where T : class, new()
-        {
-            return new SimpleClient<T>(sugarClient);
-        }
-        /// <summary>
-        /// 功能描述:获取一个自定义的数据库处理对象
-        /// 作　　者:Blog.Core
-        /// </summary>
-        /// <param name="config">config</param>
-        /// <returns>返回值</returns>
-        public static SimpleClient<T> GetCustomEntityDB<T>(ConnectionConfig config) where T : class, new()
-        {
-            SqlSugarClient sugarClient = GetCustomDB(config);
-            return GetCustomEntityDB<T>(sugarClient);
-        }
-        #endregion
+
     }
 }

@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 using System.Xml;
 using System.IO;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+using MyWebApiProject.Common.Util;
+using MyWebApiProject.Model.Seed;
 
 namespace MyWebApiProject
 {
@@ -18,8 +21,30 @@ namespace MyWebApiProject
         
         public static void Main(string[] args)
         {
-         
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            // 创建可用于解析作用域服务的新 Microsoft.Extensions.DependencyInjection.IServiceScope。
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    // 从 system.IServicec提供程序获取 T 类型的服务。
+                    var configuration = services.GetRequiredService<IConfiguration>();
+                    if (configuration.GetSection("AppSettings")["SeedDBEnabled"].ObjectToBool() || configuration.GetSection("AppSettings")["SeedDBDataEnabled"].ObjectToBool())
+                    {
+                        var myContext = services.GetRequiredService<MyContext>();
+                        var Env = services.GetRequiredService<IWebHostEnvironment>();
+                        DbSeed.SeedDataAsync(myContext, Env.WebRootPath).Wait();
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"Error occured seeding the Database.\n{e.Message}");
+                    throw;
+                }
+            }
+            host.Run();
+            //  CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

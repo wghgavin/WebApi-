@@ -67,6 +67,7 @@ namespace MyWebApiProject
             services.AddSignalR();
             services.AddAutoMapperSetup();
             services.AddSqlsugarSetup();
+            services.AddDbSetup();
             services.AddSingleton<ILogHelper, LogHelper>();
             services.AddControllers(o =>
             {

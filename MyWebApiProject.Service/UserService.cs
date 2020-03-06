@@ -22,6 +22,7 @@ namespace MyWebApiProject.Service
         public async Task<List<UserEntity>> GetAllUsers()
         {
             return await dal.Query();
+            
         }
     }
 }
