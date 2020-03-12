@@ -58,11 +58,12 @@ namespace MyWebApiProject.Model.Seed
                             {
                                 object obj = JsonUtil.ParseObjByJson(ReflectionUtil.CreateGeneric(typeof(List<>), item).GetType(), json);
                                 bool result = (ReflectionUtil.ExportByClassType(typeof(MyContext), item, "InsertTables", new object[] { obj }) as Task<bool>).Result;
-                                if (result) Console.Write($"Tables:{item.Name} Insert Data Suceess!\r\n");
-                                else Console.WriteLine($"Tables:{item.Name} Insert Data Fail!\r\n");
+                                if (result) Console.WriteLine($"Tables:{item.Name} Insert Data Suceess!");
+                                else Console.WriteLine($"Tables:{item.Name} Insert Data Fail!");
                             }
                         }
                     }
+                    Console.WriteLine();
                 }
             }
             catch (Exception ex)

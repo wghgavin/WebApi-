@@ -47,6 +47,11 @@ namespace MyWebApiProject.AuthHelper
             var encodedJwt = jwtHandler.WriteToken(jwt);
             return encodedJwt;
         }
+        /// <summary>
+        /// 序列化token
+        /// </summary>
+        /// <param name="jwtStr"></param>
+        /// <returns></returns>
         public static TokenModelJwt SerializeJwt(string jwtStr)
         {
             var jwtHandler = new JwtSecurityTokenHandler();
