@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyWebApiProject.Model.Seed
 {
-   public class DbSeed
+    public class DbSeed
     {
         private static string SeedDataFolder = "DbJson/{0}.tsv";
         /// <summary>
@@ -42,25 +42,25 @@ namespace MyWebApiProject.Model.Seed
                 }
                 Console.WriteLine("Create Database...");
                 myContext.Db.DbMaintenance.CreateDatabase();
-                var classes =  Assembly.Load("MyWebApiProject.Model").GetTypes().Where(x=>x.Namespace== "MyWebApiProject.Model.DbModel").ToArray();
+                var classes = Assembly.Load("MyWebApiProject.Model").GetTypes().Where(x => x.Namespace == "MyWebApiProject.Model.DbModel").ToArray();
                 myContext.CreateTableByEntity(false, classes);
                 Console.WriteLine("Database is  created success!");
                 Console.WriteLine();
                 if (Appsettings.app(new string[] { "AppSettings", "SeedDBDataEnabled" }).ObjectToBool())
                 {
                     Console.WriteLine("Seeding database...");
-                    foreach(var item in classes)
+                    foreach (var item in classes)
                     {
-                       object a = ReflectionUtil.ExportByClassType(typeof(MyContext), item, "ExitList", null);
-                        if (!((ReflectionUtil.ExportByClassType(typeof(MyContext),item, "ExitList", null))as Task<bool>).Result)
+                        if (!(((ReflectionUtil.ExportByClassType(typeof(MyContext), item, "ExitList", null)) as Task<bool>).Result))
                         {
                             string json = FileUtil.ReadFile(string.Format(SeedDataFolder, item.Name));
                             if (json != string.Empty)
                             {
-                              object obj =  JsonUtil.ParseObjByJson(item, json);
-                             bool result =  (ReflectionUtil.ExportByClassType(typeof(MyContext), item, "InsertTables",new object[] { obj}) as Task<bool>).Result;
+                                object obj = JsonUtil.ParseObjByJson(ReflectionUtil.CreateGeneric(typeof(List<>), item).GetType(), json);
+                                bool result = (ReflectionUtil.ExportByClassType(typeof(MyContext), item, "InsertTables", new object[] { obj }) as Task<bool>).Result;
+                                if (result) Console.Write($"Tables:{item.Name} Insert Data Suceess!\r\n");
+                                else Console.WriteLine($"Tables:{item.Name} Insert Data Fail!\r\n");
                             }
-                            
                         }
                     }
                 }

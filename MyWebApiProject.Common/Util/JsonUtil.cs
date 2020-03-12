@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace MyWebApiProject.Common.Util
 {
@@ -37,8 +38,12 @@ namespace MyWebApiProject.Common.Util
             object obj = Activator.CreateInstance(classType);
             using(MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(jsonStr)))
             {
+                var settings = new DataContractJsonSerializerSettings
+                {
+                    DateTimeFormat = new DateTimeFormat("yyyy-MM-dd HH:mm:ss")
+                };
                 DataContractJsonSerializer serializer =
-                    new DataContractJsonSerializer(classType);
+                    new DataContractJsonSerializer(classType,settings);
                 return serializer.ReadObject(ms);
             }
         }
@@ -50,7 +55,11 @@ namespace MyWebApiProject.Common.Util
         /// <returns></returns>
         public static object ParseObjByJson2(Type classType, string jsonStr)
         {
-           return JsonConvert.DeserializeObject(jsonStr, classType);
+            var setting = new JsonSerializerSettings
+            {
+                DateFormatString = "yyyy-MM-dd HH:mm:ss"
+            };
+            return JsonConvert.DeserializeObject(jsonStr, classType,setting);
         }
     }
 }

@@ -110,11 +110,16 @@ namespace MyWebApiProject.Model.Seed
         }
         public async Task<bool> InsertTables<T>(object table) where T : class, new()
         {
-            if ((table as List<T>) == null)
+            var tables = table as List<T>;
+            if (tables==null)
             {
                 return false;
             }
-            return await Task.Run(() => GetEntityDB<T>().InsertRange((List<T>)table));
+            if (tables.Count == 0)
+            {
+                return true;
+            }
+            return await Task.Run(() => GetEntityDB<T>().InsertRange(tables));
         }
 
         #endregion

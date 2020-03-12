@@ -17,5 +17,17 @@ namespace MyWebApiProject.Common.Util
             object? obj = classType.GetMethod(excuteMethodStr).MakeGenericMethod(genericType).Invoke(Activator.CreateInstance(classType), param);
             return obj;
         }
+        /// <summary>
+        /// 创建泛型类
+        /// </summary>
+        /// <param name="generic">泛型</param>
+        /// <param name="innerType">类别T的type</param>
+        /// <param name="args">构造函数的参数</param>
+        /// <returns></returns>
+        public static object CreateGeneric(Type generic, Type innerType, params object[] args)
+        {
+            Type specificType = generic.MakeGenericType(new System.Type[] { innerType });
+            return Activator.CreateInstance(specificType, args);
+        }
     }
 }
