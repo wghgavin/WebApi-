@@ -116,7 +116,6 @@ namespace MyWebApiProject.Model.Seed
             }
             return await Task.Run(() => GetEntityDB<T>().InsertRange((List<T>)table));
         }
-
         #endregion
         #region 根据数据库表生产实体类
 

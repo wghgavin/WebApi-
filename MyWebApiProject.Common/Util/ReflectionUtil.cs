@@ -17,5 +17,9 @@ namespace MyWebApiProject.Common.Util
             object? obj = classType.GetMethod(excuteMethodStr).MakeGenericMethod(genericType).Invoke(Activator.CreateInstance(classType), param);
             return obj;
         }
+        public Type GetListType<T>()
+        {
+            return typeof(List<T>);
+        }
     }
 }
