@@ -110,11 +110,16 @@ namespace MyWebApiProject.Model.Seed
         }
         public async Task<bool> InsertTables<T>(object table) where T : class, new()
         {
-            if ((table as List<T>) == null)
+            var tables = table as List<T>;
+            if (tables==null)
             {
                 return false;
             }
-            return await Task.Run(() => GetEntityDB<T>().InsertRange((List<T>)table));
+            if (tables.Count == 0)
+            {
+                return true;
+            }
+            return await Task.Run(() => GetEntityDB<T>().InsertRange(tables));
         }
         #endregion
         #region 根据数据库表生产实体类
@@ -125,7 +130,7 @@ namespace MyWebApiProject.Model.Seed
         /// <param name="strPath">实体类存放路径</param>
         public void CreateClassFileByDBTalbe(string strPath)
         {
-            CreateClassFileByDBTalbe(strPath, "Km.PosZC");
+            CreateClassFileByDBTalbe(strPath, "MyWebApiProject.Model.DbModel");
         }
         /// <summary>
         /// 功能描述:根据数据库表生产实体类
@@ -160,6 +165,7 @@ namespace MyWebApiProject.Model.Seed
         {
             if (lstTableNames != null && lstTableNames.Length > 0)
             {
+              //这里初始化类的模板
                 _db.DbFirst.Where(lstTableNames).IsCreateDefaultValue().IsCreateAttribute()
                     .SettingClassTemplate(p => p = @"
 {using}

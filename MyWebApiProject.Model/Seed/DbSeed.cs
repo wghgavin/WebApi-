@@ -51,19 +51,19 @@ namespace MyWebApiProject.Model.Seed
                     Console.WriteLine("Seeding database...");
                     foreach (var item in classes)
                     {
-                        if (!((ReflectionUtil.ExportByClassType(typeof(MyContext), item, "ExitList", null)) as Task<bool>).Result)
+                        if (!(((ReflectionUtil.ExportByClassType(typeof(MyContext), item, "ExitList", null)) as Task<bool>).Result))
                         {
                             string json = FileUtil.ReadFile(string.Format(SeedDataFolder, item.Name));
                             if (json != string.Empty)
                             {
-                                Type t = ReflectionUtil.ExportByClassType(typeof(ReflectionUtil), item, "GetListType", null) as Type;
-                                object obj = JsonUtil.ParseObjByJson2(t, json);
+                                object obj = JsonUtil.ParseObjByJson(ReflectionUtil.CreateGeneric(typeof(List<>), item).GetType(), json);
                                 bool result = (ReflectionUtil.ExportByClassType(typeof(MyContext), item, "InsertTables", new object[] { obj }) as Task<bool>).Result;
-                                if (result) Console.WriteLine($"Table:{item.Name} created success!");
+                                if (result) Console.WriteLine($"Tables:{item.Name} Insert Data Suceess!");
+                                else Console.WriteLine($"Tables:{item.Name} Insert Data Fail!");
                             }
-
                         }
                     }
+                    Console.WriteLine();
                 }
             }
             catch (Exception ex)

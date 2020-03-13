@@ -35,7 +35,6 @@ namespace MyWebApiProject.Controllers
             TimeSpan sliding = d2 - d1;
             TimeSpan absoulute = d3 - d1;
             var jwtStr = JwtHelper.IssueJwt(tokenModel);
-
             string response = string.Format("\"value\":\"{0}\"", jwtStr);
             string call = callBack + "({" + response + "})";
             Response.WriteAsync(call);

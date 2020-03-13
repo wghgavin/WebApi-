@@ -9,7 +9,11 @@ namespace MyWebApiProject.DbToJsonFileTool.Extension
     {
         public static string  ToJson(this object obj)
         {
-            return JsonConvert.SerializeObject(obj);
+            var setting = new JsonSerializerSettings
+            {
+                DateFormatString = "yyyy-MM-dd HH:mm:ss"
+            };
+            return JsonConvert.SerializeObject(obj,setting);
         }
     }
 }

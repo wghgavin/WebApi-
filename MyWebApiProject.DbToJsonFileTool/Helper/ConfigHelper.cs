@@ -5,8 +5,11 @@ using System.IO;
 using System.Xml;
 using System.Configuration;
 using SqlSugar;
+using MyWebApiProject.DbToJsonFileTool.Service;
+
 namespace MyWebApiProject.DbToJsonFileTool.Helper
 {
+
     public class ConfigHelper
     {
         public static DbConfig GetDbConfig()
@@ -18,8 +21,16 @@ namespace MyWebApiProject.DbToJsonFileTool.Helper
                 ConStr = ConfigurationManager.ConnectionStrings[dbTypeStr].ConnectionString
 
             };
-         }
+        }
+        public static ProgramMode GetProGramType()
+        {
+            string mode = ConfigurationManager.AppSettings["ProgramMode"];
+            ProgramMode mod = (ProgramMode)Enum.Parse(typeof(ProgramMode), mode);
+            return mod;
+        }
+
     }
+
     public class DbConfig
     {
         public string ConStr { get; set; }
