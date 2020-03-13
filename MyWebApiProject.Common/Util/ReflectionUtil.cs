@@ -29,5 +29,14 @@ namespace MyWebApiProject.Common.Util
             Type specificType = generic.MakeGenericType(new System.Type[] { innerType });
             return Activator.CreateInstance(specificType, args);
         }
+        /// <summary>
+        /// 通过T创建list
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static Type GetListType<T>()
+        {
+            return typeof(List<T>);
+        }
     }
 }
