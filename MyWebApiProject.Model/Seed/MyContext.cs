@@ -99,6 +99,11 @@ namespace MyWebApiProject.Model.Seed
             });
         }
         #endregion
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public SimpleClient<T> GetEntityDB<T>() where T : class, new()
         {
             return new SimpleClient<T>(_db);
