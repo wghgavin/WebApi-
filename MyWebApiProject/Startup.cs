@@ -43,10 +43,12 @@ namespace MyWebApiProject
     public class Startup
     {
         public static ILoggerRepository repository { get; set; }
+        private static readonly ILog log =
+        LogManager.GetLogger(typeof(GlobalExceptionsFilter));
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
-            repository = LogManager.CreateRepository("");//需要获取日志的仓库名，也就是你的当前项目名
-            XmlConfigurator.Configure(repository, new FileInfo("log4net.config"));//配置文件
+            //repository = LogManager.CreateRepository("");//需要获取日志的仓库名，也就是你的当前项目名
+            //XmlConfigurator.Configure(repository, new FileInfo("log4net.config"));//配置文件
             Configuration = configuration;
             Env = env;
         }
@@ -157,9 +159,11 @@ namespace MyWebApiProject
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             //app.UseSignalRSendMildd();
+            //记录log4
+            loggerFactory.AddLog4Net();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

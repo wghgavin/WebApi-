@@ -21,6 +21,14 @@ namespace MyWebApiProject
         
         public static void Main(string[] args)
         {
+            XmlDocument log4netConfig = new XmlDocument();
+            log4netConfig.Load(File.OpenRead("Log4net.config"));
+
+            var repo = log4net.LogManager.CreateRepository(
+                Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+
+            log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
+
             var host = CreateHostBuilder(args).Build();
             // 创建可用于解析作用域服务的新 Microsoft.Extensions.DependencyInjection.IServiceScope。
             using (var scope = host.Services.CreateScope())
@@ -54,7 +62,14 @@ namespace MyWebApiProject
                     webBuilder.
                     UseStartup<Startup>()
                     //.ConfigureKestrel(options => options.ListenAnyIP(5000));//用于局域网
-                    .UseUrls("http://0.0.0.0:5000");//用于局域网和https://*:5000效果一样
+                    .UseUrls("http://0.0.0.0:5000")
+                    .ConfigureLogging((hostingContext,builder)=> {
+                        builder.ClearProviders();
+                        builder.SetMinimumLevel(LogLevel.Trace);
+                        builder.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                        builder.AddConsole();
+                        builder.AddDebug();
+                     });//用于局域网和https://*:5000效果一样
                 });
     }
 }
