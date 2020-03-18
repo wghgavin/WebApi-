@@ -43,25 +43,28 @@ namespace MyWebApiProject.AOP
                 // 异步获取异常，先执行
                 if (IsAsyncMethod(invocation.Method)){
                     //Wait task execution and modify return value
-                    if (invocation.Method.ReturnType == typeof(Task))
+                    if (invocation.Method.ReturnType == typeof(Task))//异步非泛型
                     {
                         invocation.ReturnValue = InternalAsyncHelper.AwaitTaskWithPostActionAndFinally(
                             (Task)invocation.ReturnValue,
+                            async () => await SuccessAction(invocation, dataIntercept)
+                            ,
                              ex =>
                              {
-                                 LogEx(ex, ref dataIntercept);
+                                 LogEx(ex, dataIntercept);
                              }
-                            );
+                            ) ;
                     }
-                    else
+                    else//异步泛型
                     {
                          invocation.ReturnValue = InternalAsyncHelper.CallAwaitTaskWithPostActionAndFinallyAndGetResult(
-                         invocation.Method.ReturnType.GenericTypeArguments[0],
+                         invocation.Method.ReturnType.GenericTypeArguments[0],                         
                          invocation.ReturnValue,
+                         async () => await SuccessAction(invocation, dataIntercept),
                          ex =>
                          {
-                             LogEx(ex, ref dataIntercept);
-                         });
+                             LogEx(ex,dataIntercept);
+                         });;
                     }
                 }
                 else
@@ -72,27 +75,31 @@ namespace MyWebApiProject.AOP
             }
             catch (Exception ex)//同步2
             {
-                LogEx(ex, ref dataIntercept);
+                LogEx(ex,dataIntercept);
             }
             #endregion
 
+         
+            _hubContext.Clients.All.SendAsync("ReceiveUpdate", LogLock.GetLogData()).Wait();
+
+
+        }
+        private async Task SuccessAction(IInvocation invocation, string dataIntercept)
+        {
             var type = invocation.Method.ReturnType;
             if (typeof(Task).IsAssignableFrom(type))
             {
                 var resultProperty = type.GetProperty("Result");
-                dataIntercept += ($"【执行完成结果】：{JsonConvert.SerializeObject(resultProperty.GetValue(invocation.ReturnValue))}");
+                dataIntercept += $"【执行完成结果】：{JsonConvert.SerializeObject(resultProperty.GetValue(invocation.ReturnValue))}";
             }
             else
             {
-                dataIntercept += ($"【执行完成结果】：{invocation.ReturnValue}");
+                dataIntercept += ($"【执行完成结果】：{invocation.ReturnValue}");//同步
             }
-            
-            Parallel.For(0, 1, e => {
+            Parallel.For(0, 1, e =>
+            {
                 LogLock.OutSql2Log("AOPLog", new string[] { dataIntercept });
-            });//多线程并行的for循环
-            _hubContext.Clients.All.SendAsync("ReceiveUpdate", LogLock.GetLogData()).Wait();
-
-
+            });
         }
         public static bool IsAsyncMethod(MethodInfo method)
         {
@@ -101,13 +108,7 @@ namespace MyWebApiProject.AOP
                 (method.ReturnType.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
                 );
         }
-        private async Task TestActionAsync(IInvocation invocation)
-        {
-            //Console.WriteLine("Waiting after method execution for " + invocation.MethodInvocationTarget.Name);
-            await Task.Delay(20); // 仅作测试
-            //Console.WriteLine("Waited after method execution for " + invocation.MethodInvocationTarget.Name);
-        }
-        private void LogEx(Exception ex, ref string dataIntercept)
+        private void LogEx(Exception ex, string dataIntercept)
         {
             if (ex != null)
             {
@@ -115,18 +116,21 @@ namespace MyWebApiProject.AOP
                 MiniProfiler.Current.CustomTiming("Errors：", ex.Message);
                 //执行的 service 中，捕获异常
                 dataIntercept += ($"方法执行中出现异常：{ex.Message + ex.InnerException}\r\n");
+                Parallel.For(0, 1, e => {
+                    LogLock.OutSql2Log("AOPLog", new string[] { dataIntercept });
+                });
             }
         }
     }
     internal static class InternalAsyncHelper
     {
-        public static async Task AwaitTaskWithPostActionAndFinally(Task actualReturnValue, Action<Exception> finalAction)
+        public static async Task AwaitTaskWithPostActionAndFinally(Task actualReturnValue,Func<Task> successAction,Action<Exception> finalAction)
         {
             Exception exception = null;
             try
             {
                 await actualReturnValue;
-                
+                await successAction();
             }
             catch (Exception ex)
             {
@@ -137,7 +141,7 @@ namespace MyWebApiProject.AOP
                 finalAction(exception);
             }
         }
-        public static async Task<T> AwaitTaskWithPostActionAndFinallyAndGetResult<T>(Task<T> actualReturnValue, Action<Exception> finalAction)
+        public static async Task<T> AwaitTaskWithPostActionAndFinallyAndGetResult<T>(Task<T> actualReturnValue, Func<Task> successAction, Action<Exception> finalAction)
         {
             Exception exception = null;
             try
@@ -155,7 +159,7 @@ namespace MyWebApiProject.AOP
                 finalAction(exception);
             }
         }
-        public static object CallAwaitTaskWithPostActionAndFinallyAndGetResult(Type taskReturnType, object actualReturnValue, Action<Exception> finalAction)
+        public static object CallAwaitTaskWithPostActionAndFinallyAndGetResult(Type taskReturnType, object actualReturnValue, Func<Task> successAction, Action<Exception> finalAction)
         {
             return typeof(InternalAsyncHelper)
                 .GetMethod("AwaitTaskWithPostActionAndFinallyAndGetResult", BindingFlags.Public | BindingFlags.Static)

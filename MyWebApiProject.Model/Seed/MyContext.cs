@@ -99,6 +99,11 @@ namespace MyWebApiProject.Model.Seed
             });
         }
         #endregion
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public SimpleClient<T> GetEntityDB<T>() where T : class, new()
         {
             return new SimpleClient<T>(_db);
@@ -121,7 +126,6 @@ namespace MyWebApiProject.Model.Seed
             }
             return await Task.Run(() => GetEntityDB<T>().InsertRange(tables));
         }
-
         #endregion
         #region 根据数据库表生产实体类
 
