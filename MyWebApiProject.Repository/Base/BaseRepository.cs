@@ -81,7 +81,7 @@ namespace MyWebApiProject.Repository.Base
         /// <returns></returns>
         public async Task<TEntity> QueryByID(object objId)
         {
-            return await Task.Run(() => _db.Queryable<TEntity>().InSingle(objId));
+            return await _db.Queryable<TEntity>().In(objId).SingleAsync();
         }
         /// <summary>
         /// 功能描述:根据ID查询一条数据
