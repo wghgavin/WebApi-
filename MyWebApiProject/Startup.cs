@@ -35,7 +35,6 @@ using MyWebApiProject.Common.Redis;
 using log4net.Repository;
 using log4net;
 using log4net.Config;
-using MyWebApiProject.Log4;
 using MyWebApiProject.Filter;
 
 namespace MyWebApiProject
@@ -70,7 +69,7 @@ namespace MyWebApiProject
             services.AddAutoMapperSetup();
             services.AddSqlsugarSetup();
             services.AddDbSetup();
-            services.AddSingleton<ILogHelper, LogHelper>();
+            //services.AddSingleton<ILogHelper, LogHelper>();
             services.AddControllers(o =>
             {
                 // 全局异常过滤

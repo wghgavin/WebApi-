@@ -13,12 +13,13 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using MyWebApiProject.Common.Util;
 using MyWebApiProject.Model.Seed;
+using log4net;
 
 namespace MyWebApiProject
 {
     public class Program
     {
-        
+        private static readonly ILog log = LogManager.GetLogger(typeof(Program));
         public static void Main(string[] args)
         {
             XmlDocument log4netConfig = new XmlDocument();
@@ -47,9 +48,10 @@ namespace MyWebApiProject
                 }
                 catch (Exception e)
                 {
-                    throw new Exception($"Error occured seeding the Database.\n{e.Message}");
-                    throw;
+                    //throw new Exception($"Error occured seeding the Database.\n{e.Message}");
+                    log.Error($"Error occured seeding the Database.\n{e.Message}");
                 }
+                log.Info("123456");
             }
             host.Run();
         }
@@ -58,17 +60,18 @@ namespace MyWebApiProject
             Host.CreateDefaultBuilder(args).
             UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
-                { 
+                {
                     webBuilder.
                     UseStartup<Startup>()
                     //.ConfigureKestrel(options => options.ListenAnyIP(5000));//用于局域网
                     .UseUrls("http://0.0.0.0:5000")
-                    .ConfigureLogging((hostingContext,builder)=> {
-                        builder.ClearProviders();
-                        builder.SetMinimumLevel(LogLevel.Trace);
-                        builder.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                        builder.AddConsole();
-                        builder.AddDebug();
+                    .ConfigureLogging((hostingContext, builder) =>
+                     {
+                         builder.ClearProviders();
+                         builder.SetMinimumLevel(LogLevel.Trace);
+                         builder.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                         builder.AddConsole();
+                         builder.AddDebug();
                      });//用于局域网和https://*:5000效果一样
                 });
     }
