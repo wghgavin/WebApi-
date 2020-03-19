@@ -27,10 +27,10 @@ namespace MyWebApiProject.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GetAllGoodsInfo")]
-        
+
         public async Task<List<GoodsEntity>> GetAllGoodsInfo()
         {
-            return await goodsService.Query();           
+            return await goodsService.Query();
         }
     }
 }

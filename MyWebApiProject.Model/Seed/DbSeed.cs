@@ -21,12 +21,7 @@ namespace MyWebApiProject.Model.Seed
         public static async Task SeedDataAsync(MyContext myContext, string WebRootPath)
         {
             try
-            {
-                if (string.IsNullOrEmpty(WebRootPath))
-                {
-                    throw new Exception("获取wwwroot路径时，异常！");
-                }
-                SeedDataFolder = Path.Combine(WebRootPath, SeedDataFolder);
+            {             
                 Console.WriteLine("Config data init...");
                 Console.WriteLine($"Is multi-DataBase: {Appsettings.app(new string[] { "MutiDBEnabled" })}");
                 if (Appsettings.app(new string[] { "MutiDBEnabled" }).ObjectToBool())
@@ -48,6 +43,11 @@ namespace MyWebApiProject.Model.Seed
                 Console.WriteLine();
                 if (Appsettings.app(new string[] { "AppSettings", "SeedDBDataEnabled" }).ObjectToBool())
                 {
+                    if (string.IsNullOrEmpty(WebRootPath))
+                    {
+                        throw new Exception("获取wwwroot路径时，异常！无法进行DBDataSeed");
+                    }
+                    SeedDataFolder = Path.Combine(WebRootPath, SeedDataFolder);
                     Console.WriteLine("Seeding database...");
                     foreach (var item in classes)
                     {

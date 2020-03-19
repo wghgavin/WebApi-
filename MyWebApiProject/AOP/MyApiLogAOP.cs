@@ -147,6 +147,7 @@ namespace MyWebApiProject.AOP
             try
             {
                 var result = await actualReturnValue;
+                await successAction();
                 return result;
             }
             catch (Exception ex)
@@ -164,7 +165,7 @@ namespace MyWebApiProject.AOP
             return typeof(InternalAsyncHelper)
                 .GetMethod("AwaitTaskWithPostActionAndFinallyAndGetResult", BindingFlags.Public | BindingFlags.Static)
                 .MakeGenericMethod(taskReturnType)
-                .Invoke(null, new object[] { actualReturnValue, finalAction });
+                .Invoke(null, new object[] { actualReturnValue, successAction, finalAction });
         }
     }
 }
