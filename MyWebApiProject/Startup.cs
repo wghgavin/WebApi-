@@ -69,28 +69,30 @@ namespace MyWebApiProject
             services.AddAutoMapperSetup();
             services.AddSqlsugarSetup();
             services.AddDbSetup();
+            //services.AddSingleton<ISysUserInfoService, SysUserInfoService>();
             //services.AddSingleton<ILogHelper, LogHelper>();
             services.AddControllers(o =>
             {
                 // 全局异常过滤
                 o.Filters.Add(typeof(GlobalExceptionsFilter));
             });
+            services.AddAuthorizationSetup();
             #region JWT 认证
             #region 代码简洁版
-            services
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //.AddCustomAuth(o => { })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = Configuration["Audience:Issuer"],
-                    ValidAudience = Configuration["Audience:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Audience:Secret"])),
-                    // 默认允许 300s  的时间偏移量，设置为0
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
+            //services
+            //.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            ////.AddCustomAuth(o => { })
+            //.AddJwtBearer(options =>
+            //{
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidIssuer = Configuration["Audience:Issuer"],
+            //        ValidAudience = Configuration["Audience:Audience"],
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Audience:Secret"])),
+            //        // 默认允许 300s  的时间偏移量，设置为0
+            //        ClockSkew = TimeSpan.Zero
+            //    };
+            //});
             #endregion
             #region 代码复杂版
             //#region 参数

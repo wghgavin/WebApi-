@@ -48,10 +48,8 @@ namespace MyWebApiProject
                 }
                 catch (Exception e)
                 {
-                    //throw new Exception($"Error occured seeding the Database.\n{e.Message}");
-                    log.Error($"Error occured seeding the Database.\n{e.Message}");
+                    throw new Exception($"Error occured seeding the Database.\n{e.Message}");
                 }
-                log.Info("123456");
             }
             host.Run();
         }

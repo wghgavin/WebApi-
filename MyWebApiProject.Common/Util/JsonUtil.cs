@@ -38,12 +38,12 @@ namespace MyWebApiProject.Common.Util
             object obj = Activator.CreateInstance(classType);
             using(MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(jsonStr)))
             {
-                var settings = new DataContractJsonSerializerSettings
-                {
-                    DateTimeFormat = new DateTimeFormat("yyyy-MM-dd HH:mm:ss")
-                };
+                //var settings = new DataContractJsonSerializerSettings
+                //{
+                //    DateTimeFormat = new DateTimeFormat("yyyy-MM-dd HH:mm:ss")
+                //};
                 DataContractJsonSerializer serializer =
-                    new DataContractJsonSerializer(classType,settings);
+                    new DataContractJsonSerializer(classType);
                 return serializer.ReadObject(ms);
             }
         }

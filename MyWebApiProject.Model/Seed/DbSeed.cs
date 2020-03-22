@@ -51,7 +51,7 @@ namespace MyWebApiProject.Model.Seed
                     Console.WriteLine("Seeding database...");
                     foreach (var item in classes)
                     {
-                        if (!(((ReflectionUtil.ExportByClassType(typeof(MyContext), item, "ExitList", null)) as Task<bool>).Result))
+                        if (!(((ReflectionUtil.ExportByClassType(typeof(MyContext), item, "ExitList", null)) as Task<bool>).Result)&&File.Exists(string.Format(SeedDataFolder,item.Name)))
                         {
                             string json = FileUtil.ReadFile(string.Format(SeedDataFolder, item.Name));
                             if (json != string.Empty)
