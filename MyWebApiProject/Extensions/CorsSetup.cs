@@ -12,7 +12,8 @@ namespace MyWebApiProject.Extensions
         public static void AddCorsSetup(this IServiceCollection services)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
-            services.AddCors(c => {
+            services.AddCors(c =>
+            {
                 //↓↓↓↓↓↓↓注意正式环境不要使用这种全开放的处理↓↓↓↓↓↓↓↓↓↓
                 //c.AddPolicy("AllRequests", policy =>
                 //{
@@ -26,7 +27,8 @@ namespace MyWebApiProject.Extensions
                 c.AddPolicy("LimitRequests", policy =>
                 {
                     policy
-                    .WithOrigins(Appsettings.app(new string[] { "Startup", "Cors", "IPs" }).Split(','))//支持多个域名端口，注意端口号后不要带/斜杆：比如localhost:8000/，是错的
+                   // .WithOrigins(Appsettings.app(new string[] { "Startup", "Cors", "IPs" }).Split(','))//支持多个域名端口，注意端口号后不要带/斜杆：比如localhost:8000/，是错的
+                    .AllowAnyOrigin()
                     .AllowAnyHeader()//Ensures that the policy allows any header.
                     .AllowAnyMethod();
                 });

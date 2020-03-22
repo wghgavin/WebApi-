@@ -50,4 +50,8 @@
     <EmbeddedResource Include="index.html" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Log\" />
+  </ItemGroup>
+
 </Project>
