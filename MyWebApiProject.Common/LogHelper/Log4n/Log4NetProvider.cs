@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace MyWebApiProject.Common.LogHelper.Log4n
 {
-   public class Log4NetProvider: ILoggerProvider
+    public class Log4NetProvider : ILoggerProvider
     {
         private readonly string _log4NetConfigFile;
         private readonly ConcurrentDictionary<string, Log4NetLogger> _loggers =
@@ -17,10 +17,12 @@ namespace MyWebApiProject.Common.LogHelper.Log4n
         {
             _log4NetConfigFile = log4NetConfigFile;
         }
+
         public ILogger CreateLogger(string categoryName)
         {
             return _loggers.GetOrAdd(categoryName, CreateLoggerImplementation);
         }
+
         public void Dispose()
         {
             _loggers.Clear();
@@ -29,6 +31,7 @@ namespace MyWebApiProject.Common.LogHelper.Log4n
         {
             return new Log4NetLogger(name, Parselog4NetConfigFile(_log4NetConfigFile));
         }
+
         private static XmlElement Parselog4NetConfigFile(string filename)
         {
             XmlDocument log4netConfig = new XmlDocument();

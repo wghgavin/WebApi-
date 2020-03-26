@@ -1,11 +1,11 @@
-﻿using System;
+﻿using log4net;
+using log4net.Repository;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Xml;
-using log4net;
-using log4net.Repository;
-using Microsoft.Extensions.Logging;
 
 namespace MyWebApiProject.Common.LogHelper.Log4n
 {
@@ -15,7 +15,7 @@ namespace MyWebApiProject.Common.LogHelper.Log4n
         private readonly XmlElement _xmlElement;
         private readonly ILog _log;
         private ILoggerRepository _loggerRepository;
-        public Log4NetLogger(string name,XmlElement xmlElement)
+        public Log4NetLogger(string name, XmlElement xmlElement)
         {
             _name = name;
             _xmlElement = xmlElement;
@@ -49,7 +49,8 @@ namespace MyWebApiProject.Common.LogHelper.Log4n
             }
         }
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,
+            Exception exception, Func<TState, Exception, string> formatter)
         {
             if (!IsEnabled(logLevel))
             {

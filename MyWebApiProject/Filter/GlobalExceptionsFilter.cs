@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using StackExchange.Profiling;
 using Microsoft.Extensions.Logging;
 using log4net;
+using MyWebApiProject.Common.LogHelper.Log4n;
 
 namespace MyWebApiProject.Filter
 {
@@ -19,10 +20,7 @@ namespace MyWebApiProject.Filter
     public class GlobalExceptionsFilter: IExceptionFilter
     {
         private readonly IWebHostEnvironment _env;
-        //private readonly ILogHelper _loggerHelper;
         private readonly ILogger<GlobalExceptionsFilter> _loggerHelper;
-        private static readonly ILog log =
-        LogManager.GetLogger(typeof(GlobalExceptionsFilter));
         public GlobalExceptionsFilter(IWebHostEnvironment env, ILogger<GlobalExceptionsFilter> loggerHelper)
         {
             _env = env;
@@ -39,7 +37,8 @@ namespace MyWebApiProject.Filter
             context.Result = new InternalServerErrorObjectResult(json);
             MiniProfiler.Current.CustomTiming("Errors：", json.Message);
             //采用log4net 进行错误日志记录
-            log.Error(json.Message+ WriteLog(json.Message, context.Exception)); 
+            //log.Error(json.Message+ WriteLog(json.Message, context.Exception)); 
+            LogHelper.Error(json.Message + WriteLog(json.Message, context.Exception));
             
         }
         /// <summary>

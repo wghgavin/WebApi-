@@ -42,12 +42,8 @@ namespace MyWebApiProject
     public class Startup
     {
         public static ILoggerRepository repository { get; set; }
-        private static readonly ILog log =
-        LogManager.GetLogger(typeof(GlobalExceptionsFilter));
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
-            //repository = LogManager.CreateRepository("");//需要获取日志的仓库名，也就是你的当前项目名
-            //XmlConfigurator.Configure(repository, new FileInfo("log4net.config"));//配置文件
             Configuration = configuration;
             Env = env;
         }
@@ -69,8 +65,6 @@ namespace MyWebApiProject
             services.AddAutoMapperSetup();
             services.AddSqlsugarSetup();
             services.AddDbSetup();
-            //services.AddSingleton<ISysUserInfoService, SysUserInfoService>();
-            //services.AddSingleton<ILogHelper, LogHelper>();
             services.AddControllers(o =>
             {
                 // 全局异常过滤
@@ -192,6 +186,7 @@ namespace MyWebApiProject
                           "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapHub<ChatHub>("/chatHub");
             });
+        
             #region Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>

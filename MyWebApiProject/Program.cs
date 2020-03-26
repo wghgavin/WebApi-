@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MyWebApiProject.Common.Util;
 using MyWebApiProject.Model.Seed;
 using log4net;
+using MyWebApiProject.Common.LogHelper.Log4n;
 
 namespace MyWebApiProject
 {
@@ -26,11 +27,12 @@ namespace MyWebApiProject
             log4netConfig.Load(File.OpenRead("Log4net.config"));
 
             var repo = log4net.LogManager.CreateRepository(
-                Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+                "NetCoreRepository", typeof(log4net.Repository.Hierarchy.Hierarchy));
 
             log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
 
             var host = CreateHostBuilder(args).Build();
+            LogHelper.Info("gogogogogo");
             // 创建可用于解析作用域服务的新 Microsoft.Extensions.DependencyInjection.IServiceScope。
             using (var scope = host.Services.CreateScope())
             {
