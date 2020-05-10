@@ -20,6 +20,6 @@ namespace MyWebApiProject.Model
         /// <summary>
         /// 返回数据集合
         /// </summary>
-        public T response { get; set; }
+        public T response { get; set; } = default(T);
     }
 }

@@ -9,6 +9,7 @@ namespace MyWebApiProject.Model.DbModel
     {
         [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int Id { get; set; }
+        public int ShopId { get; set; }
         public string ProductName { get; set; }
         public decimal Price { get; set; }
     }

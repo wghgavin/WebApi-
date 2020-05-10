@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyWebApiProject.AuthHelper;
 using MyWebApiProject.Common.Util;
 using MyWebApiProject.IService;
+using MyWebApiProject.Model;
 
 namespace MyWebApiProject.Controllers
 {
@@ -23,22 +24,47 @@ namespace MyWebApiProject.Controllers
         IRoleService _roleServices;
         PermissionRequirement _requirement;
         IRoleModulePermissionService _roleModulePermissionServices;
+        ILoginService loginService;
         /// <summary>
         /// 构造函数注入
         /// </summary>
+        /// <param name="loginServce"></param>
         /// <param name="sysUserInfoServices"></param>
         /// <param name="userRoleServices"></param>
         /// <param name="roleServices"></param>
         /// <param name="requirement"></param>
         /// <param name="roleModulePermissionServices"></param>
-        public LoginController(ISysUserInfoService sysUserInfoServices,IUserRoleService userRoleServices,IRoleService roleServices, PermissionRequirement requirement, IRoleModulePermissionService roleModulePermissionServices)
+        public LoginController(ILoginService loginServce,ISysUserInfoService sysUserInfoServices,IUserRoleService userRoleServices,IRoleService roleServices, PermissionRequirement requirement, IRoleModulePermissionService roleModulePermissionServices)
         {
             this._sysUserInfoServices = sysUserInfoServices;
             this._userRoleServices = userRoleServices;
             this._roleServices = roleServices;
             _requirement = requirement;
             _roleModulePermissionServices = roleModulePermissionServices;
+            this.loginService = loginServce;
         }
+        [HttpPost]
+        public async Task<MessageModel<bool>> Login(string name = "", string pass = "")
+        {
+            bool result = await loginService.QueryByUserNameAndPwd(name, pass);
+            if (result)
+            {
+                return new MessageModel<bool>
+                {
+                    msg = "登录成功",
+                    success=true
+                };
+            }
+            else
+            {
+                return new MessageModel<bool>
+                {
+                    msg = "登录失败，账号或密码错误",
+                    success = false
+                };
+            }
+        }
+
         [HttpGet(Name = "GetJwtToken3")]
         //[Route("GetJwtToken3")]
         public async Task<object> GetJwtToken3(string name = "", string pass = "")
